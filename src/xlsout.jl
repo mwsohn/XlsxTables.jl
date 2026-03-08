@@ -423,11 +423,11 @@ function bivariatexls(df::AbstractDataFrame,
 
     # number of columns
     # column values
-    if wts == nothing
-        collev = freqtable(df2, colvar, skipmissing=true)
-    else
-        collev = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
-    end
+    # if wts == nothing
+    #     collev = freqtable(df2, colvar, skipmissing=true)
+    # else
+    #     collev = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
+    # end
 
     # drop empty rows
     # z = findall(x -> x != 0, collev.array)
