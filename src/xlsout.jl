@@ -582,7 +582,7 @@ function bivariatexls(df::AbstractDataFrame,
         else
             # continuous variable
             df3 = df2[completecases(df2[!, [varname]]), [varname, colvar]]
-            y = combine(groupby(df3, colvar, sort=true), nrow => :n, varname => mean => :mean, varnbame => std => :sd) #tabstat(df3, varname, colvar)
+            y = combine(groupby(df3, colvar, sort=true), nrow => :n, varname => mean => :mean, varname => std => :sd) #tabstat(df3, varname, colvar)
 
             # variable name
             LibXLSXWriter.worksheet_write_string(t, r, c, string(vars, ", mean (SD)"), formats[:model_name])
