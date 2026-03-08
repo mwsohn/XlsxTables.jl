@@ -8,7 +8,7 @@ module XlsxTables
 
 using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, DataStructures,
     HypothesisTests, NamedArrays, FreqTables, Stella, TableMetadataTools, LogisticROC, 
-    Dates, OrderedCollections, AnalysisOfVariance
+    Dates, OrderedCollections, AnalysisOfVariance, LibXLSXWriter
 
 ##############################################################################
 ##
@@ -16,7 +16,8 @@ using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, Da
 ##
 ##############################################################################
 
-export  univariatexls # output univariate statistics in an excel worksheet
+export  univariatexls,   # output univariate statistics in an excel worksheet
+        dfxls
         # bivariatexls,  # output bivariate statistics in an excel worksheet
         # glmxls,        # output GLM models to an excel worksheet
         # mglmxls,       # output multiple GLM regression models to an excel spreadsheet
