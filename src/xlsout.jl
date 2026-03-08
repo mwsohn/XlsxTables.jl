@@ -889,7 +889,7 @@ function dfxls(df::AbstractDataFrame,
         r += 1
 
         for j in 1:nrow(df)
-            # println("i = ",i,"; j = ",j,". value = ",df[j,i])
+            
 
             if ismissing(df[j, i])
                 worksheet_write_string(t, r, c, " ", formats[:n_fmt])
@@ -897,7 +897,7 @@ function dfxls(df::AbstractDataFrame,
                 if df[j, i] == ""
                     worksheet_write_string(t, r, c, " ", formats[:text])
                 else
-                    worksheet_write_string(t, r, c, df[j, i], formats[:text])
+                    worksheet_write_string(t, r, c, String(df[j, i]), formats[:text])
                 end
             elseif typ[i] <: Number
                 if isnan(df[j, i]) || isinf(df[j, i])
