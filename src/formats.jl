@@ -35,7 +35,7 @@ format_defs[:heading_left] = Dict(
     "font_size" => 10,
     "valign" => "vcenter",
     "align" => "left",
-    "right" => true,
+    "right" => "thin",
     "bottom" => "thin",
     "top" => "thin"
 )
@@ -523,8 +523,7 @@ function create_formats(wb; fmt::Dict=format_defs)
             elseif ff == "font_color"
                 fmt_function[ff](newfmts[key], fmt_color[fdict[ff]])
             elseif ff in ("border", "left", "top", "right", "bottom")
-                style = fdict[ff]
-                fmt_function[ff](newfmts[key], fmt_border[style == true ? "thick" : style])
+                fmt_function[ff](newfmts[key], fmt_border[fdict[ff]])
             else
                 fmt_function[ff](newfmts[key], fdict[ff])
             end
