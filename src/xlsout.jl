@@ -347,321 +347,307 @@
 # end
 
 
-# """
-#     bivariatexls(df::DataFrame,colvar::Symbol,rowvars::Vector{Symbol},workbook::PyObject,worksheet::AbstractString; row=0,col=0,column_percent = true)
+"""
+    bivariatexls(df::DataFrame,colvar::Symbol,rowvars::Vector{Symbol},workbook::PyObject,worksheet::AbstractString; row=0,col=0,column_percent = true)
 
-#  Creates bivariate statistics and appends it in a nice tabular format to an existing workbook.
-#  To use this function, `PyCall` is required with a working version python and
-#  a python package called `xlsxwriter` installed.  If a label is found for a variable
-#  or a value of a variable in a `Label`, the label will be output. Options are:
+ Creates bivariate statistics and appends it in a nice tabular format to an existing workbook.
+ To use this function, `PyCall` is required with a working version python and
+ a python package called `xlsxwriter` installed.  If a label is found for a variable
+ or a value of a variable in a `Label`, the label will be output. Options are:
 
-# - `df`: a DataFrame
-# - `colvar`: a categorical variable whose values will be displayed on the columns
-# - `rowvars`: a Vector of Symbols for variables to be displayed on the rows. Both continuous and categorical variables are allowed.
-#     For continuous variables, mean and standard deviations will be output and a p-value will be based on an ANOVA test. For categorical variables,
-#     a r x c table with cell counts and row percentages will be output with a p-value based on a chi-square test.
-# - `workbook`: a returned value from xlsxwriter.Workbook() function (see an example below)
-# - `worksheet`: a string for the worksheet name
-# - `row`: specify the row of the workbook to start the output table (default = 0 (for row 1))
-# - `col`: specify the column of the workbook to start the output table (default = 0 (for column A))
-# - `column_percent`: set this to `false` if you want row percentages in the output table (default = true)
+- `df`: a DataFrame
+- `colvar`: a categorical variable whose values will be displayed on the columns
+- `rowvars`: a Vector of Symbols for variables to be displayed on the rows. Both continuous and categorical variables are allowed.
+    For continuous variables, mean and standard deviations will be output and a p-value will be based on an ANOVA test. For categorical variables,
+    a r x c table with cell counts and row percentages will be output with a p-value based on a chi-square test.
+- `workbook`: a returned value from xlsxwriter.Workbook() function (see an example below)
+- `worksheet`: a string for the worksheet name
+- `row`: specify the row of the workbook to start the output table (default = 0 (for row 1))
+- `col`: specify the column of the workbook to start the output table (default = 0 (for column A))
+- `column_percent`: set this to `false` if you want row percentages in the output table (default = true)
 
-# ### Example 1
-# This example is useful when one wants to append a worksheet to an existing workbook.
-# It is responsibility of the user to open a workbook before the function call and close it
-# to actually create the physical file by close the workbook.
+### Example 1
+This example is useful when one wants to append a worksheet to an existing workbook.
+It is responsibility of the user to open a workbook before the function call and close it
+to actually create the physical file by close the workbook.
 
-# ```
-# julia> using PyCall
+```
+julia> using PyCall
 
-# julia> xlsxwriter = pyimport("xlsxwriter")
+julia> xlsxwriter = pyimport("xlsxwriter")
 
-# julia> wb = xlsxwriter.Workbook("test_workbook.xlsx")
-# PyObject <xlsxwriter.workbook.Workbook object at 0x000000002A628E80>
+julia> wb = xlsxwriter.Workbook("test_workbook.xlsx")
+PyObject <xlsxwriter.workbook.Workbook object at 0x000000002A628E80>
 
-# julia> bivairatexls(df,:incomecat,[:age,:race,:male,:bmicat],wb,"Bivariate")
+julia> bivairatexls(df,:incomecat,[:age,:race,:male,:bmicat],wb,"Bivariate")
 
-# Julia> wb.close()
-# ```
+Julia> wb.close()
+```
 
-# ### Example 2
-# Alternatively, one can create a spreadsheet file directly. `PyCall` or `@pyimport`
-# does not need to be called before the function.
+### Example 2
+Alternatively, one can create a spreadsheet file directly. `PyCall` or `@pyimport`
+does not need to be called before the function.
 
-# ```
-# julia> bivariatexls(df,:incomecat,[:age,:race,:male,:bmicat],"test_workbook.xlsx","Bivariate")
-# ```
-# """
-# function bivariatexls(df::AbstractDataFrame,
-#     colvar::Symbol,
-#     rowvars::Vector{Symbol},
-#     wbook::PyObject,
-#     wsheet::AbstractString)
+```
+julia> bivariatexls(df,:incomecat,[:age,:race,:male,:bmicat],"test_workbook.xlsx","Bivariate")
+```
+"""
+function bivariatexls(df::AbstractDataFrame,
+    wbook,
+    wsheet::AbstractString,
+    colvar::Symbol,
+    rowvars::Vector{Symbol};
+    column_percent = false
+    )
 
-#     # wts::Symbol = nothing, 
-#     # rows::Int = 0, 
-#     # cols::Int = 0, 
-#     # column_percent::Bool = true) 
+    row = 0
+    col = 0
 
-#     # ,
-#     # verbose::Bool = false)
+    # colvar has to be a CategoricalArray and must have 2 or more categories
+    if isa(df[!, colvar], CategoricalArray) == false || length(levels(df[!, colvar])) < 2
+        error("`", colvar, "` is not a CategoricalArray or does not have two or more levels")
+    end
 
-#     wts = nothing
-#     row = 0
-#     col = 0
-#     verbose = false
-#     column_percent = false
+    # create a worksheet
+    t = LibXLSXWriter.workbook_add_worksheet(wbook,wsheet)
 
-#     # colvar has to be a CategoricalArray and must have 2 or more categories
-#     if isa(df[!, colvar], CategoricalArray) == false || length(levels(df[!, colvar])) < 2
-#         error("`", colvar, "` is not a CategoricalArray or does not have two or more levels")
-#     end
+    # attach formats to the workbook
+    formats = create_formats(wbook)
 
-#     # create a worksheet
-#     t = wbook.add_worksheet(wsheet)
+    # starting row and column
+    r = row
+    c = col
 
-#     # attach formats to the workbook
-#     formats = ExcelTables.attach_formats(wbook)
+    # drop NAs in colvar
+    df2 = df[completecases(df[!, [colvar]]), :]
 
-#     # starting row and column
-#     r = row
-#     c = col
+    # number of columns
+    # column values
+    if wts == nothing
+        collev = freqtable(df2, colvar, skipmissing=true)
+    else
+        collev = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
+    end
 
-#     # drop NAs in colvar
-#     df2 = df[completecases(df[!, [colvar]]), :]
+    # drop empty rows
+    # z = findall(x -> x != 0, collev.array)
+    nlev = length(collev.array)
+    tmpnms = names(collev, 1)
+    colnms = Vector{CategoricalArrays.leveltype(tmpnms)}(tmpnms)
+    coltot = sum(collev.array, dims=1)
 
-#     # number of columns
-#     # column values
-#     if wts == nothing
-#         collev = freqtable(df2, colvar, skipmissing=true)
-#     else
-#         collev = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
-#     end
+    # set column widths
+    worksheet_set_column(c, c, 40)
+    LibXLSXWriter.worksheet_set_column(c + 1, c + (nlev + 1) * 2 + 1, 9)
 
-#     # drop empty rows
-#     # z = findall(x -> x != 0, collev.array)
-#     nlev = length(collev.array)
-#     tmpnms = names(collev, 1)
-#     colnms = Vector{CategoricalArrays.leveltype(tmpnms)}(tmpnms)
-#     coltot = sum(collev.array, dims=1)
+    # create header
+    # column variable name
+    # It uses three rows
+    LibXLSXWriter.worksheet_merge_range(r, c, r + 2, c, "Variable", formats[:heading])
 
-#     # set column widths
-#     t.set_column(c, c, 40)
-#     t.set_column(c + 1, c + (nlev + 1) * 2 + 1, 9)
+    # header 1st row = variable name
+    LibXLSXWriter.worksheet_merge_range(r, c + 1, r, c + (nlev + 1) * 2 + 1, TableMetadataTools.label(df, colvar), formats[:heading])
 
-#     # create header
-#     # column variable name
-#     # It uses three rows
-#     t.merge_range(r, c, r + 2, c, "Variable", formats[:heading])
+    # header 2nd and 3rd rows
+    r += 1
 
-#     # header 1st row = variable name
-#     t.merge_range(r, c + 1, r, c + (nlev + 1) * 2 + 1, TableMetadataTools.label(df, colvar), formats[:heading])
+    LibXLSXWriter.worksheet_merge_range(r, 1, r, 2, "All", formats[:heading])
+    LibXLSXWriter.worksheet_write_string(r + 1, 1, "N", formats[:n_fmt_right])
+    LibXLSXWriter.worksheet_write_string(r + 1, 2, "(%)", formats[:pct_fmt_parens])
 
-#     # header 2nd and 3rd rows
-#     r += 1
+    # 
+    c += 3
+    for i = 1:nlev
+        LibXLSXWriter.worksheet_merge_range(r, c + (i - 1) * 2, r, c + (i - 1) * 2 + 1, string(colnms[i]), formats[:heading])
+        LibXLSXWriter.worksheet_write_string(r + 1, c + (i - 1) * 2, "N", formats[:n_fmt_right])
+        LibXLSXWriter.worksheet_write_string(r + 1, c + (i - 1) * 2 + 1, "(%)", formats[:pct_fmt_parens])
+    end
 
-#     t.merge_range(r, 1, r, 2, "All", formats[:heading])
-#     t.write_string(r + 1, 1, "N", formats[:n_fmt_right])
-#     t.write_string(r + 1, 2, "(%)", formats[:pct_fmt_parens])
+    # P-value
+    LibXLSXWriter.worksheet_merge_range(r, c + nlev * 2, r + 1, c + nlev * 2, "P-Value", formats[:heading])
 
-#     # 
-#     c += 3
-#     for i = 1:nlev
-#         t.merge_range(r, c + (i - 1) * 2, r, c + (i - 1) * 2 + 1, string(colnms[i]), formats[:heading])
-#         t.write_string(r + 1, c + (i - 1) * 2, "N", formats[:n_fmt_right])
-#         t.write_string(r + 1, c + (i - 1) * 2 + 1, "(%)", formats[:pct_fmt_parens])
-#     end
+    # total
+    c = col
+    r += 2
+    LibXLSXWriter.worksheet_write_string(r, c, "All, n (Row %)", formats[:model_name])
+    if wts == nothing
+        x = freqtable(df2, colvar, skipmissing=true)
+    else
+        x = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
+    end
+    tot = sum(x)
+    LibXLSXWriter.worksheet_write(t,r, c + 1, tot, formats[:n_fmt_right])
+    LibXLSXWriter.worksheet_write_number(t,r, c + 2, 1.0, formats[:pct_fmt_parens])
+    for i = 1:nlev
+        LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, x.array[i], formats[:n_fmt_right])
+        LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, x.array[i] / tot, formats[:pct_fmt_parens])
+    end
+    LibXLSXWriter.worksheet_write_number(t,r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
 
-#     # P-value
-#     t.merge_range(r, c + nlev * 2, r + 1, c + nlev * 2, "P-Value", formats[:heading])
+    # covariates
+    c = col
+    r += 1
+    for varname in rowvars
 
-#     # total
-#     c = col
-#     r += 2
-#     t.write_string(r, c, "All, n (Row %)", formats[:model_name])
-#     if wts == nothing
-#         x = freqtable(df2, colvar, skipmissing=true)
-#     else
-#         x = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
-#     end
-#     tot = sum(x)
-#     t.write(r, c + 1, tot, formats[:n_fmt_right])
-#     t.write(r, c + 2, 1.0, formats[:pct_fmt_parens])
-#     for i = 1:nlev
-#         t.write(r, c + i * 2 + 1, x.array[i], formats[:n_fmt_right])
-#         t.write(r, c + i * 2 + 2, x.array[i] / tot, formats[:pct_fmt_parens])
-#     end
-#     t.write(r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
+        # variable name
+        vars = label(df, varname) # a function in TableMetadataTools
 
-#     # covariates
-#     c = col
-#     r += 1
-#     for varname in rowvars
+        # determine if varname is categorical or continuous
+        if isa(df2[!, varname], CategoricalArray) || eltype(df2[!, varname]) == String
 
-#         # if verbose == true
-#         #     println("Processing ",varname)
-#         # end
+            # categorial
+            df3 = df2[completecases(df2[:, [varname]]), [varname, colvar]]
+            if wts == nothing
+                x = freqtable(df3, varname, colvar, skipmissing=true)
+            else
+                x = freqtable(df3, varname, colvar, skipmissing=true, weights=df3[!, wts])
+            end
+            rtmpnms = names(x, 1)
+            rowval = Vector{CategoricalArrays.leveltype(rtmpnms)}(rtmpnms)
+            rowtot = sum(x.array, dims=2)
+            coltot = sum(x.array, dims=1)
 
-#         # variable name
-#         vars = label(df, varname) # a function in TableMetadataTools
+            # variable name
+            # if there only two levels and one of the values is 1 or true
+            # and the other values is 0 or false,
+            # just output the frequency and percentage of the 1/true row
 
-#         # determine if varname is categorical or continuous
-#         if isa(df2[!, varname], CategoricalArray) || eltype(df2[!, varname]) == String
+            # variable name
+            LibXLSXWriter.worksheet_write_string(r, c, vars, formats[:model_name])
 
-#             # categorial
-#             df3 = df2[completecases(df2[:, [varname]]), [varname, colvar]]
-#             if wts == nothing
-#                 x = freqtable(df3, varname, colvar, skipmissing=true)
-#             else
-#                 x = freqtable(df3, varname, colvar, skipmissing=true, weights=df3[!, wts])
-#             end
-#             rtmpnms = names(x, 1)
-#             rowval = Vector{CategoricalArrays.leveltype(rtmpnms)}(rtmpnms)
-#             rowtot = sum(x.array, dims=2)
-#             coltot = sum(x.array, dims=1)
+            # two levels with [0,1] or [false,true]
+            if length(rowval) <= 2 && rowval in ([1], [true], ["Yes"], [0, 1], [false, true], ["No", "Yes"])
 
-#             # variable name
-#             # if there only two levels and one of the values is 1 or true
-#             # and the other values is 0 or false,
-#             # just output the frequency and percentage of the 1/true row
+                nr = length(rowval)
+                # row total
+                LibXLSXWriter.worksheet_write_number(t,r, c + 1, rowtot[nr], formats[:n_fmt_right])
+                LibXLSXWriter.worksheet_write_number(t,r, c + 2, rowtot[nr] / tot, formats[:pct_fmt_parens])
 
-#             # variable name
-#             t.write_string(r, c, vars, formats[:model_name])
+                for j = 1:nlev
+                    LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 1, x.array[nr, j], formats[:n_fmt_right])
+                    if column_percent
+                        LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, coltot[j] > 0 ? x.array[nr, j] / coltot[j] : "", formats[:pct_fmt_parens])
+                    else # elseif rowtot[2] > 0
+                        LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, rowtot[nr] > 0 ? x.array[nr, j] / rowtot[nr] : "", formats[:pct_fmt_parens])
+                    end
+                end
+                pval = pvalue(ChisqTest(x.array))
+                if isnan(pval) || isinf(pval)
+                    pval = ""
+                elseif pval < 0.001
+                    pval = "< 0.001"
+                end
+                LibXLSXWriter.worksheet_write_number(t,r, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
+                r += 1
+            else
+                for i = 1:nlev+1
+                    LibXLSXWriter.worksheet_write_string(r, c + (i - 1) * 2 + 1, "", formats[:empty_right])
+                    LibXLSXWriter.worksheet_write_string(r, c + (i - 1) * 2 + 2, "", formats[:empty_left])
+                end
+                LibXLSXWriter.worksheet_write_string(r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
 
-#             # two levels with [0,1] or [false,true]
-#             if length(rowval) <= 2 && rowval in ([1], [true], ["Yes"], [0, 1], [false, true], ["No", "Yes"])
+                r += 1
+                for i = 1:length(rowval)
+                    # row value
+                    LibXLSXWriter.worksheet_write_string(r, c, string(rowval[i]), formats[:varname_1indent])
 
-#                 nr = length(rowval)
-#                 # row total
-#                 t.write(r, c + 1, rowtot[nr], formats[:n_fmt_right])
-#                 t.write(r, c + 2, rowtot[nr] / tot, formats[:pct_fmt_parens])
+                    # row total
+                    LibXLSXWriter.worksheet_write_number(t,r, c + 1, rowtot[i], formats[:n_fmt_right])
+                    LibXLSXWriter.worksheet_write_number(t,r, c + 2, rowtot[i] / tot, formats[:pct_fmt_parens])
 
-#                 for j = 1:nlev
-#                     t.write(r, c + j * 2 + 1, x.array[nr, j], formats[:n_fmt_right])
-#                     if column_percent
-#                         t.write(r, c + j * 2 + 2, coltot[j] > 0 ? x.array[nr, j] / coltot[j] : "", formats[:pct_fmt_parens])
-#                     else # elseif rowtot[2] > 0
-#                         t.write(r, c + j * 2 + 2, rowtot[nr] > 0 ? x.array[nr, j] / rowtot[nr] : "", formats[:pct_fmt_parens])
-#                     end
-#                 end
-#                 pval = pvalue(ChisqTest(x.array))
-#                 if isnan(pval) || isinf(pval)
-#                     pval = ""
-#                 elseif pval < 0.001
-#                     pval = "< 0.001"
-#                 end
-#                 t.write(r, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
-#                 r += 1
-#             else
-#                 for i = 1:nlev+1
-#                     t.write_string(r, c + (i - 1) * 2 + 1, "", formats[:empty_right])
-#                     t.write_string(r, c + (i - 1) * 2 + 2, "", formats[:empty_left])
-#                 end
-#                 t.write_string(r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
+                    for j = 1:nlev
+                        LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 1, x.array[i, j], formats[:n_fmt_right])
+                        if column_percent
+                            LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, coltot[j] > 0 ? x.array[i, j] / coltot[j] : "", formats[:pct_fmt_parens])
+                        else
+                            LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, rowtot[i] > 0 ? x.array[i, j] / rowtot[i] : "", formats[:pct_fmt_parens])
+                        end
+                    end
+                    # p-value - output only once
+                    pval = pvalue(ChisqTest(x.array))
 
-#                 r += 1
-#                 for i = 1:length(rowval)
-#                     # row value
-#                     t.write_string(r, c, string(rowval[i]), formats[:varname_1indent])
+                    if isnan(pval) || isinf(pval)
+                        pval = ""
+                    elseif pval < 0.001
+                        pval = "< 0.001"
+                    end
+                    if length(rowval) == 1
+                        LibXLSXWriter.worksheet_write_number(t,r, c + (nlev + 1) * 2, pval, formats[:p_fmt])
+                    elseif i == 1
+                        LibXLSXWriter.worksheet_merge_range(r, c + (nlev + 1) * 2 + 1, r + length(rowval) - 1, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
+                    end
+                    r += 1
+                end
+            end
+        else
+            # continuous variable
+            df3 = df2[completecases(df2[!, [varname]]), [varname, colvar]]
+            y = tabstat(df3, varname, colvar, table=false) #, wt=df3[wt])
 
-#                     # row total
-#                     t.write(r, c + 1, rowtot[i], formats[:n_fmt_right])
-#                     t.write(r, c + 2, rowtot[i] / tot, formats[:pct_fmt_parens])
+            # variable name
+            LibXLSXWriter.worksheet_write_string(r, c, string(vars, ", mean (SD)"), formats[:model_name])
 
-#                     for j = 1:nlev
-#                         t.write(r, c + j * 2 + 1, x.array[i, j], formats[:n_fmt_right])
-#                         if column_percent
-#                             t.write(r, c + j * 2 + 2, coltot[j] > 0 ? x.array[i, j] / coltot[j] : "", formats[:pct_fmt_parens])
-#                         else
-#                             t.write(r, c + j * 2 + 2, rowtot[i] > 0 ? x.array[i, j] / rowtot[i] : "", formats[:pct_fmt_parens])
-#                         end
-#                     end
-#                     # p-value - output only once
-#                     pval = pvalue(ChisqTest(x.array))
+            # All
+            tmpvec = collect(skipmissing(df3[!, varname]))
+            if length(tmpvec) == 0
+                amean = ""
+                astd = ""
+            else
+                amean = mean(tmpvec)
+                if isnan(amean)
+                    amean = ""
+                end
+                astd = std(tmpvec)
+                if isnan(astd)
+                    astd = ""
+                end
+            end
+            LibXLSXWriter.worksheet_write_number(t,r, c + 1, amean, formats[:f_fmt_right])
+            LibXLSXWriter.worksheet_write_number(t,r, c + 2, astd, formats[:f_fmt_left_parens])
 
-#                     if isnan(pval) || isinf(pval)
-#                         pval = ""
-#                     elseif pval < 0.001
-#                         pval = "< 0.001"
-#                     end
-#                     if length(rowval) == 1
-#                         t.write(r, c + (nlev + 1) * 2, pval, formats[:p_fmt])
-#                     elseif i == 1
-#                         t.merge_range(r, c + (nlev + 1) * 2 + 1, r + length(rowval) - 1, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
-#                     end
-#                     r += 1
-#                 end
-#             end
-#         else
-#             # continuous variable
-#             df3 = df2[completecases(df2[!, [varname]]), [varname, colvar]]
-#             y = tabstat(df3, varname, colvar, table=false) #, wt=df3[wt])
+            # colvar levels
+            for i = 1:nlev
+                if i <= size(y, 1) && y[i, :n] > 1
+                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, y[i, :mean], formats[:f_fmt_right])
+                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, y[i, :sd], formats[:f_fmt_left_parens])
+                else
+                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, "", formats[:f_fmt_right])
+                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, "", formats[:f_fmt_left_parens])
+                end
+            end
+            if size(y, 1) > 1
+                pval = AnalysisOfVariance.anova(df3, varname, colvar).pvalue[2]
+                if ismissing(pval) || isnan(pval) || isinf(pval)
+                    pval = ""
+                elseif pval < 0.001
+                    pval = "< 0.001"
+                end
+                LibXLSXWriter.worksheet_write_number(t,r, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
+            else
+                LibXLSXWriter.worksheet_write_number(t,t,r, c + (nlev + 1) * 2 + 1, "", formats[:p_fmt])
+            end
 
-#             # variable name
-#             t.write_string(r, c, string(vars, ", mean (SD)"), formats[:model_name])
+            r += 1
+        end
+    end
+end
+function bivariatexls(_df::AbstractDataFrame,
+    colvar::Symbol,
+    rowvars::Vector{Symbol},
+    wbook::AbstractString,
+    wsheet::AbstractString;
+    column_percent=false)
 
-#             # All
-#             tmpvec = collect(skipmissing(df3[!, varname]))
-#             if length(tmpvec) == 0
-#                 amean = ""
-#                 astd = ""
-#             else
-#                 amean = mean(tmpvec)
-#                 if isnan(amean)
-#                     amean = ""
-#                 end
-#                 astd = std(tmpvec)
-#                 if isnan(astd)
-#                     astd = ""
-#                 end
-#             end
-#             t.write(r, c + 1, amean, formats[:f_fmt_right])
-#             t.write(r, c + 2, astd, formats[:f_fmt_left_parens])
+    wb = LibXLSXWriter.workbook_new(wbook)
 
-#             # colvar levels
-#             for i = 1:nlev
-#                 if i <= size(y, 1) && y[i, :n] > 1
-#                     t.write(r, c + i * 2 + 1, y[i, :mean], formats[:f_fmt_right])
-#                     t.write(r, c + i * 2 + 2, y[i, :sd], formats[:f_fmt_left_parens])
-#                 else
-#                     t.write(r, c + i * 2 + 1, "", formats[:f_fmt_right])
-#                     t.write(r, c + i * 2 + 2, "", formats[:f_fmt_left_parens])
-#                 end
-#             end
-#             if size(y, 1) > 1
-#                 pval = AnalysisOfVariance.anova(df3, varname, colvar).pvalue[2]
-#                 if ismissing(pval) || isnan(pval) || isinf(pval)
-#                     pval = ""
-#                 elseif pval < 0.001
-#                     pval = "< 0.001"
-#                 end
-#                 t.write(r, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
-#             else
-#                 t.write(r, c + (nlev + 1) * 2 + 1, "", formats[:p_fmt])
-#             end
+    bivariatexls(_df,wb, wsheet,colvar,rowvars; column_percent=column_percent)
 
-#             r += 1
-#         end
-#     end
-# end
-# # function bivariatexls(_df::AbstractDataFrame,
-# #     colvar::Symbol,
-# #     rowvars::Vector{Symbol},
-# #     wbook::AbstractString,
-# #     wsheet::AbstractString)
-
-# #     xlsxwriter = pyimport("xlsxwriter")
-
-# #     wb = xlsxwriter.Workbook(wbook)
-
-# #     bivariatexls(_df,colvar,rowvars,wb,wsheet)
-
-# #     wb.close()
-# # end
+    LibXLSXWriter.workbook_close(wb)
+end
 
 
 """
-    univariatexls(df::DataFrame,contvars::Vector{Symbol},workbook::PyObject,worksheet::AbstractString; labels::Union{Nothing,Label}=nothing,row=0,col=0)
+    univariatexls(df::DataFrame,workbook,worksheet::AbstractString,contvars::Vector{Symbol}; row=0,col=0)
 
 Creates univariate statistics for a vector of continuous variable and
 appends it to an existing workbook.
@@ -670,9 +656,9 @@ a python package called `xlsxwriter` installed.  If a label is found for a varia
 in a `Label` object, the label will be output. Options are:
 
 - `df`: a DataFrame
-- `contvars`: a vector of continuous variables
 - `workbook`: a returned value from xlsxwriter.Workbook() function (see an example below)
 - `worksheet`: a string for the worksheet name
+- `contvars`: a vector of continuous variables
 - `row`: specify the row of the workbook to start the output table (default = 0 (for row 1))
 - `col`: specify the column of the workbook to start the output table (default = 0 (for column A))
 
@@ -683,15 +669,11 @@ to actually create the physical file by close the workbook.
 
 ```
 julia> wb = workbook_new("test_workbook.xlsx")
-PyObject <xlsxwriter.workbook.Workbook object at 0x000000002A628E80>
-
-julia> glmxls(ols1,wb,"OLS1",labels = label)
-
-julia> bivairatexls(df,:incomecat,[:age,:race,:male,:bmicat],wb,"Bivariate")
+Ptr{LibXLSXWriter.lxw_workbook}(0x0000018dfdb527f0)
 
 julia> univariatexls(df,[:age,:income_amt,:bmi],wb,"Univariate")
 
-Julia> wb.close()
+Julia> workbook_close(wb)
 ```
 
 # Example 2
@@ -699,7 +681,7 @@ Alternatively, one can create a spreadsheet file directly. `PyCall` or `@pyimpor
 does not need to be called before the function.
 
 ```jldoctest
-julia> univariatexls(df,[:age,:income_amt,:bmi],"test_workbook.xlsx","Bivariate")
+julia> univariatexls(df,"test_workbook.xlsx","Bivariate",[:age,:income_amt,:bmi])
 ```
 
 """
