@@ -17,7 +17,8 @@ using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, Da
 ##############################################################################
 
 export  univariatexls,   # output univariate statistics in an excel worksheet
-        dfxls
+        dfxls,
+        create_formats
         # bivariatexls,  # output bivariate statistics in an excel worksheet
         # glmxls,        # output GLM models to an excel worksheet
         # mglmxls,       # output multiple GLM regression models to an excel spreadsheet
@@ -31,6 +32,6 @@ export  univariatexls,   # output univariate statistics in an excel worksheet
 ##############################################################################
 include("xlsout.jl")
 # include("mglmxls.jl")
-# include("formats.jl")
+include("formats.jl")
 
 end # module
