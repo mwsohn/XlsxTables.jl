@@ -728,7 +728,7 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
         "SD", "Variance", "Minimum", "P25", "Median", "P75", "Maximum",
         "Skewness", "Kurtosis", "Smalles", "", "", "", "", "Largest", "", "", "", ""]
 
-    t.write_string(r, c, "Statistic", formats[:heading])
+    workbook_write_string(t, r, c, "Statistic", formats[:heading])
     for i in 1:24
         workbook_write_string(t, r + i, c, rownms[i], formats[:heading_left])
     end
