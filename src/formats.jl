@@ -7,7 +7,7 @@ format_defs[:heading] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "center",
-    "border" => "medium"
+    "border" => "thin"
 )
 
 format_defs[:text] = Dict(
@@ -15,7 +15,7 @@ format_defs[:text] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "left",
-    "border" => "medium"
+    "border" => "thin"
 )
 
 format_defs[:heading_right] = Dict(
@@ -24,9 +24,9 @@ format_defs[:heading_right] = Dict(
     "font_size" => 10,
     "valign" => "vcenter",
     "align" => "right",
-    "left" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "left" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:heading_left] = Dict(
@@ -36,8 +36,8 @@ format_defs[:heading_left] = Dict(
     "valign" => "vcenter",
     "align" => "left",
     "right" => true,
-    "bottom" => "medium",
-    "top" => "medium"
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:model_name] = Dict(
@@ -74,9 +74,9 @@ format_defs[:n_fmt_right] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "right",
-    "left" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "left" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 
@@ -86,9 +86,9 @@ format_defs[:n_fmt_left_parens] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "right",
-    "right" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "right" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:f_date] = Dict(
@@ -115,9 +115,9 @@ format_defs[:f_fmt_right] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "right",
-    "left" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "left" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:f_fmt_center] = Dict(
@@ -163,9 +163,9 @@ format_defs[:f_fmt_left_parens] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "left",
-    "right" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "right" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 
@@ -175,9 +175,9 @@ format_defs[:pct_fmt_parens] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "left",
-    "right" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "right" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 
@@ -196,9 +196,9 @@ format_defs[:or_fmt] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "right",
-    "left" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "left" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:cilb_fmt] = Dict(
@@ -207,8 +207,8 @@ format_defs[:cilb_fmt] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "right",
-    "bottom" => "medium",
-    "top" => "medium"
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:ciub_fmt] = Dict(
@@ -217,9 +217,9 @@ format_defs[:ciub_fmt] = Dict(
     "font_size" => 9,
     "valign" => "vcenter",
     "align" => "left",
-    "right" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "right" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 
@@ -230,9 +230,9 @@ format_defs[:or_fmt_red] = Dict(
     "font_color" => "red",
     "valign" => "vcenter",
     "align" => "right",
-    "left" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "left" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:cilb_fmt_red] = Dict(
@@ -242,8 +242,8 @@ format_defs[:cilb_fmt_red] = Dict(
     "font_color" => "red",
     "valign" => "vcenter",
     "align" => "right",
-    "bottom" => "medium",
-    "top" => "medium"
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:ciub_fmt_red] = Dict(
@@ -253,9 +253,9 @@ format_defs[:ciub_fmt_red] = Dict(
     "font_color" => "red",
     "valign" => "vcenter",
     "align" => "left",
-    "right" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "right" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 
@@ -266,9 +266,9 @@ format_defs[:or_fmt_bold] = Dict(
     "bold" => true,
     "valign" => "vcenter",
     "align" => "right",
-    "left" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "left" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:cilb_fmt_bold] = Dict(
@@ -278,8 +278,8 @@ format_defs[:cilb_fmt_bold] = Dict(
     "bold" => true,
     "valign" => "vcenter",
     "align" => "right",
-    "bottom" => "medium",
-    "top" => "medium"
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:ciub_fmt_bold] = Dict(
@@ -289,9 +289,9 @@ format_defs[:ciub_fmt_bold] = Dict(
     "bold" => true,
     "valign" => "vcenter",
     "align" => "left",
-    "right" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "right" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:p_fmt] = Dict(
@@ -357,7 +357,7 @@ format_defs[:p_fmt2_bold] = Dict(
     #"num_format" => "0.000",
     "font_name" => "Arial",
     "font_size" => 9,
-    "bold" => "medium",
+    "bold" => "thin",
     "valign" => "vcenter",
     "align" => "right",
     "border" => "thin"
@@ -372,25 +372,25 @@ format_defs[:empty_border] = Dict(
 format_defs[:empty_left] = Dict(
     #"num_format" => "0.000",
     "valign" => "vcenter",
-    "right" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "right" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 format_defs[:empty_right] = Dict(
     #"num_format" => "0.000",
     "valign" => "vcenter",
-    "left" => "medium",
-    "bottom" => "medium",
-    "top" => "medium"
+    "left" => "thin",
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 
 format_defs[:empty_both] = Dict(
     #"num_format" => "0.000",
     "valign" => "vcenter",
-    "bottom" => "medium",
-    "top" => "medium"
+    "bottom" => "thin",
+    "top" => "thin"
 )
 
 
@@ -446,17 +446,17 @@ fmt_color = Dict(
 fmt_border = Dict(
     "none" => 0,
     "thin" => 1,
-    "medium" => 2,
+    "thin" => 2,
     "dashed" => 3,
     "dotted" => 4,
     "thick" => 5,
     "double" => 6,
     "hair" => 7,
-    "medium_dashed" => 8,
+    "thin_dashed" => 8,
     "dash_dot" => 9,
-    "medium_dash_dot" => 10,
+    "thin_dash_dot" => 10,
     "dash_dot_dot" => 11,
-    "medium_dash_dot_dot" => 12,
+    "thin_dash_dot_dot" => 12,
     "slant_dash_dot" => 13
 )
 
