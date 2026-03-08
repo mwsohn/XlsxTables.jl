@@ -728,9 +728,9 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
         "SD", "Variance", "Minimum", "P25", "Median", "P75", "Maximum",
         "Skewness", "Kurtosis", "Smalles", "", "", "", "", "Largest", "", "", "", ""]
 
-    workbook_write_string(t, r, c, "Statistic", formats[:heading])
+    worksheet_write_string(t, r, c, "Statistic", formats[:heading])
     for i in 1:24
-        workbook_write_string(t, r + i, c, rownms[i], formats[:heading_left])
+        worksheet_write_string(t, r + i, c, rownms[i], formats[:heading_left])
     end
 
     col = 1
@@ -751,7 +751,7 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
 
         # pick up the variable label
         varstr = label(df, vsym)
-        workbook_write_string(t, 0, col, varstr, formats[:heading])
+        worksheet_write_string(t, 0, col, varstr, formats[:heading])
         u = Stella.univariate(df[!, vsym]) #,wt=df[wt])
         for j = 1:14
             if j < 4
@@ -760,9 +760,9 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
                 fmttype = :p_fmt
             end
             if isnan(u[j, :Value]) || isinf(u[j, :Value])
-                workbook_write_string(t, j, col, "", formats[fmttype])
+                worksheet_write_string(t, j, col, "", formats[fmttype])
             else
-                workbook_write_number(t, j, col, u[j, :Value], formats[fmttype])
+                worksheet_write_number(t, j, col, u[j, :Value], formats[fmttype])
             end
         end
 
@@ -775,17 +775,17 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
         end
         for j = 1:5
             if j <= len
-                workbook_write_number(t,j + 14, col, smallest[j], formats[fmttype])
+                worksheet_write_number(t,j + 14, col, smallest[j], formats[fmttype])
             else
-                workbook_write_string(t,j + 14, col, "", formats[fmttype])
+                worksheet_write_string(t,j + 14, col, "", formats[fmttype])
             end
         end
         largest = Stella.largest(df[!, vsym], n=len)
         for j = 1:5
             if j <= len
-                workbook_write_number(t,j + 19, col, largest[j], formats[fmttype])
+                worksheet_write_number(t,j + 19, col, largest[j], formats[fmttype])
             else
-                workbook_write_string(t,j + 19, col, "", formats[fmttype])
+                worksheet_write_string(t,j + 19, col, "", formats[fmttype])
             end
         end
         col += 1
