@@ -607,7 +607,7 @@ function bivariatexls(df::AbstractDataFrame,
 
             # colvar levels
             for i = 1:nlev
-                if i <= size(y.omat, 1) && y.omat[i, 1] > 1
+                if i <= size(y, 1) && y[i, :n] > 1
                     LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, y[i, :mean], formats[:f_fmt_right])
                     LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, y[i, :sd], formats[:f_fmt_left_parens])
                 else
