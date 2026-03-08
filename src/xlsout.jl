@@ -660,167 +660,19 @@
 # # end
 
 
-# """
-#     univariatexls(df::DataFrame,contvars::Vector{Symbol},workbook::PyObject,worksheet::AbstractString; labels::Union{Nothing,Label}=nothing,row=0,col=0)
-
-# Creates univariate statistics for a vector of continuous variable and
-# appends it to an existing workbook.
-# To use this function, `PyCall` is required with a working version python and
-# a python package called `xlsxwriter` installed.  If a label is found for a variable
-# in a `Label` object, the label will be output. Options are:
-
-# - `df`: a DataFrame
-# - `contvars`: a vector of continuous variables
-# - `workbook`: a returned value from xlsxwriter.Workbook() function (see an example below)
-# - `worksheet`: a string for the worksheet name
-# - `row`: specify the row of the workbook to start the output table (default = 0 (for row 1))
-# - `col`: specify the column of the workbook to start the output table (default = 0 (for column A))
-
-# # Example 1
-# This example is useful when one wants to append a worksheet to an existing workbook.
-# It is responsibility of the user to open a workbook before the function call and close it
-# to actually create the physical file by close the workbook.
-
-# ```
-# julia> using PyCall
-
-# julia> @pyimport xlsxwriter
-
-# julia> wb = xlsxwriter.Workbook("test_workbook.xlsx")
-# PyObject <xlsxwriter.workbook.Workbook object at 0x000000002A628E80>
-
-# julia> glmxls(ols1,wb,"OLS1",labels = label)
-
-# julia> bivairatexls(df,:incomecat,[:age,:race,:male,:bmicat],wb,"Bivariate")
-
-# julia> univariatexls(df,[:age,:income_amt,:bmi],wb,"Univariate")
-
-# Julia> wb.close()
-# ```
-
-# # Example 2
-# Alternatively, one can create a spreadsheet file directly. `PyCall` or `@pyimport`
-# does not need to be called before the function.
-
-# ```jldoctest
-# julia> univariatexls(df,[:age,:income_amt,:bmi],"test_workbook.xlsx","Bivariate")
-# ```
-
-# """
-# function univariatexls(df::DataFrame,
-#     contvars::Vector{Symbol},
-#     wbook::PyObject,
-#     wsheet::AbstractString;
-#     wt::Union{Nothing,Symbol}=nothing,
-#     row=0,
-#     col=0)
-
-#     # create a worksheet
-#     t = wbook.add_worksheet(wsheet)
-
-#     # attach formats to the workbook
-#     formats = ExcelTables.attach_formats(wbook)
-
-#     # starting row and column
-#     r = row
-#     c = col
-
-#     # column width
-#     t.set_column(0, 0, 20)
-#     t.set_column(1, length(contvars), 12)
-
-#     # output the row names
-#     rownms = ["N Total", "N Miss", "N Used", "Sum", "Mean",
-#         "SD", "Variance", "Minimum", "P25", "Median", "P75", "Maximum",
-#         "Skewness", "Kurtosis", "Smalles", "", "", "", "", "Largest", "", "", "", ""]
-
-#     t.write_string(r, c, "Statistic", formats[:heading])
-#     for i in 1:24
-#         t.write_string(r + i, c, rownms[i], formats[:heading_left])
-#     end
-
-#     col = 1
-#     for vsym in contvars
-
-#         # if symbol is not found in the DataFrame
-#         if !in(vsym, propertynames(df))
-#             continue
-#         end
-
-#         # vsym is not a real number
-#         if (nonmissingtype(eltype(df[!, vsym])) <: Real) == false
-#             continue
-#         end
-
-#         # non-missing values
-#         len = size(df, 1) - count(ismissing, df[!, vsym])  # sum(ismissing.(df[!,vsym]) .== false)
-
-#         # pick up the variable label
-#         varstr = label(df, vsym)
-#         t.write_string(0, col, varstr, formats[:heading])
-#         u = Stella.univariate(df[!, vsym]) #,wt=df[wt])
-#         for j = 1:14
-#             if j < 4
-#                 fmttype = :n_fmt
-#             else
-#                 fmttype = :p_fmt
-#             end
-#             if isnan(u[j, :Value]) || isinf(u[j, :Value])
-#                 t.write(j, col, "", formats[fmttype])
-#             else
-#                 t.write(j, col, u[j, :Value], formats[fmttype])
-#             end
-#         end
-
-#         len = len < 5 ? len : 5
-#         smallest = Stella.smallest(df[!, vsym], n=len)
-#         if nonmissingtype(eltype(df)) <: Integer
-#             fmttype = :n_fmt
-#         else
-#             fmttype = :p_fmt
-#         end
-#         for j = 1:5
-#             if j <= len
-#                 t.write(j + 14, col, smallest[j], formats[fmttype])
-#             else
-#                 t.write(j + 14, col, "", formats[fmttype])
-#             end
-#         end
-#         largest = Stella.largest(df[!, vsym], n=len)
-#         for j = 1:5
-#             if j <= len
-#                 t.write(j + 19, col, largest[j], formats[fmttype])
-#             else
-#                 t.write(j + 19, col, "", formats[fmttype])
-#             end
-#         end
-#         col += 1
-#     end
-# end
-# function univariatexls(df::DataFrame, contvars::Vector{Symbol}, wbook::AbstractString, wsheet::AbstractString;
-#     wt::Union{Nothing,Symbol}=nothing, row=0, col=0)
-
-#     xlsxwriter = pyimport("xlsxwriter")
-
-#     wb = wlsxwriter.Workbook(wbook)
-
-#     univariatexls(df, contvars, wb, wsheet, wt=wt, row=row, col=col)
-
-#     wb.close()
-# end
-
-
 """
-    dfxls(df::DataFrame, workbook::PyObject, worksheet::AbstractString; nrows = 500, start = 1, row=0, col=0)
+    univariatexls(df::DataFrame,contvars::Vector{Symbol},workbook::PyObject,worksheet::AbstractString; labels::Union{Nothing,Label}=nothing,row=0,col=0)
 
- To use this function, `PyCall` is required with a working version python and
- a python package called `xlsxwriter` installed. Options are:
+Creates univariate statistics for a vector of continuous variable and
+appends it to an existing workbook.
+To use this function, `PyCall` is required with a working version python and
+a python package called `xlsxwriter` installed.  If a label is found for a variable
+in a `Label` object, the label will be output. Options are:
 
 - `df`: a DataFrame
+- `contvars`: a vector of continuous variables
 - `workbook`: a returned value from xlsxwriter.Workbook() function (see an example below)
-- `worksheet`: a string for the worksheet name (default: "Data1")
-- `start`: specify the row number from which data will be output (default: 1)
-- `nrows`: specify the number of rows to output (default: 500). If nows = 0, the entire dataframe will be output.
+- `worksheet`: a string for the worksheet name
 - `row`: specify the row of the workbook to start the output table (default = 0 (for row 1))
 - `col`: specify the column of the workbook to start the output table (default = 0 (for column A))
 
@@ -830,20 +682,152 @@ It is responsibility of the user to open a workbook before the function call and
 to actually create the physical file by close the workbook.
 
 ```
-julia> xlsxwriter = pyimport("xlsxwriter")
-
-julia> wb = xlsxwriter.Workbook("test_workbook.xlsx")
+julia> wb = workbook_new("test_workbook.xlsx")
 PyObject <xlsxwriter.workbook.Workbook object at 0x000000002A628E80>
 
 julia> glmxls(ols1,wb,"OLS1",labels = label)
 
-julia> bivairatexls(df,:incomecat,[:age,:race,:male,:bmicat],wb,"Bivariate",labels = label)
+julia> bivairatexls(df,:incomecat,[:age,:race,:male,:bmicat],wb,"Bivariate")
 
-julia> univariatexls(df,[:age,:income_amt,:bmi],wb,"Univariate",labels = label)
-
-julia> dfxls(df,wb,"dataframe",nrows = 0)
+julia> univariatexls(df,[:age,:income_amt,:bmi],wb,"Univariate")
 
 Julia> wb.close()
+```
+
+# Example 2
+Alternatively, one can create a spreadsheet file directly. `PyCall` or `@pyimport`
+does not need to be called before the function.
+
+```jldoctest
+julia> univariatexls(df,[:age,:income_amt,:bmi],"test_workbook.xlsx","Bivariate")
+```
+
+"""
+function univariatexls(df::DataFrame,
+    contvars::Vector{Symbol},
+    wbook::PyObject,
+    wsheet::AbstractString;
+    wt::Union{Nothing,Symbol}=nothing,
+    row=0,
+    col=0)
+
+    # create a worksheet
+    t = LibXLSXWriter.add_worksheet(wsheet)
+
+    # attach formats to the workbook
+    formats = create_formats(wbook)
+
+    # starting row and column
+    r = row
+    c = col
+
+    # column width
+    workbook_set_column(t, 0, 0, 20)
+    workbook_set_column(t, 1, length(contvars), 12)
+
+    # output the row names
+    rownms = ["N Total", "N Miss", "N Used", "Sum", "Mean",
+        "SD", "Variance", "Minimum", "P25", "Median", "P75", "Maximum",
+        "Skewness", "Kurtosis", "Smalles", "", "", "", "", "Largest", "", "", "", ""]
+
+    t.write_string(r, c, "Statistic", formats[:heading])
+    for i in 1:24
+        workbook_write_string(t, r + i, c, rownms[i], formats[:heading_left])
+    end
+
+    col = 1
+    for vsym in contvars
+
+        # if symbol is not found in the DataFrame
+        if !in(vsym, propertynames(df))
+            continue
+        end
+
+        # vsym is not a real number
+        if (nonmissingtype(eltype(df[!, vsym])) <: Real) == false
+            continue
+        end
+
+        # non-missing values
+        len = size(df, 1) - count(ismissing, df[!, vsym])  # sum(ismissing.(df[!,vsym]) .== false)
+
+        # pick up the variable label
+        varstr = label(df, vsym)
+        workbook_write_string(t, 0, col, varstr, formats[:heading])
+        u = Stella.univariate(df[!, vsym]) #,wt=df[wt])
+        for j = 1:14
+            if j < 4
+                fmttype = :n_fmt
+            else
+                fmttype = :p_fmt
+            end
+            if isnan(u[j, :Value]) || isinf(u[j, :Value])
+                workbook_write_string(t, j, col, "", formats[fmttype])
+            else
+                workbook_write_number(t, j, col, u[j, :Value], formats[fmttype])
+            end
+        end
+
+        len = len < 5 ? len : 5
+        smallest = Stella.smallest(df[!, vsym], n=len)
+        if nonmissingtype(eltype(df)) <: Integer
+            fmttype = :n_fmt
+        else
+            fmttype = :p_fmt
+        end
+        for j = 1:5
+            if j <= len
+                workbook_write_number(t,j + 14, col, smallest[j], formats[fmttype])
+            else
+                workbook_write_string(t,j + 14, col, "", formats[fmttype])
+            end
+        end
+        largest = Stella.largest(df[!, vsym], n=len)
+        for j = 1:5
+            if j <= len
+                workbook_write_number(t,j + 19, col, largest[j], formats[fmttype])
+            else
+                workbook_write_string(t,j + 19, col, "", formats[fmttype])
+            end
+        end
+        col += 1
+    end
+end
+function univariatexls(df::DataFrame, contvars::Vector{Symbol}, wbook::AbstractString, wsheet::AbstractString;
+    wt::Union{Nothing,Symbol}=nothing, row=0, col=0)
+
+    wb = workbook_new(wbook)
+
+    univariatexls(df, contvars, wb, wsheet, wt=wt, row=row, col=col)
+
+    workbook_close(wb)
+end
+
+
+"""
+    dfxls(df::DataFrame, workbook::PyObject, worksheet::AbstractString; row=0, col=0)
+
+ To use this function, `PyCall` is required with a working version python and
+ a python package called `xlsxwriter` installed. Options are:
+
+- `df`: a DataFrame
+- `workbook`: a returned value from xlsxwriter.Workbook() function (see an example below)
+- `worksheet`: a string for the worksheet name (default: "Data1")
+- `row`: specify the row of the workbook to start the output table (default = 0 (for row 1))
+- `col`: specify the column of the workbook to start the output table (default = 0 (for column A))
+
+# Example 1
+This example is useful when one wants to append a worksheet to an existing workbook.
+It is responsibility of the user to open a workbook before the function call and close it
+to actually create the physical file by close the workbook.
+
+```
+julia> wb = workbook_new("test_workbook.xlsx")
+Ptr{LibXLSXWriter.lxw_workbook}(0x0000018dfdb527f0)
+
+julia> dfxls(df, wb, "DataFrame")
+
+Julia> workbook_close(wb)
 ```
 
 # Example 2
