@@ -705,7 +705,7 @@ julia> univariatexls(df,[:age,:income_amt,:bmi],"test_workbook.xlsx","Bivariate"
 """
 function univariatexls(df::DataFrame,
     contvars::Vector{Symbol},
-    wbook::PyObject,
+    wbook,
     wsheet::AbstractString;
     wt::Union{Nothing,Symbol}=nothing,
     row=0,
