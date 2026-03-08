@@ -482,7 +482,7 @@ function bivariatexls(df::AbstractDataFrame,
         LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, x.array[i], formats[:n_fmt_right])
         LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, x.array[i] / tot, formats[:pct_fmt_parens])
     end
-    LibXLSXWriter.worksheet_write_number(t,r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
+    LibXLSXWriter.worksheet_write_string(t,r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
 
     # covariates
     c = col
@@ -558,9 +558,9 @@ function bivariatexls(df::AbstractDataFrame,
                     for j = 1:nlev
                         LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 1, x.array[i, j], formats[:n_fmt_right])
                         if column_percent
-                            LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, coltot[j] > 0 ? x.array[i, j] / coltot[j] : "", formats[:pct_fmt_parens])
+                            LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, coltot[j] > 0 ? x.array[i, j] / coltot[j] : nothing, formats[:pct_fmt_parens])
                         else
-                            LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, rowtot[i] > 0 ? x.array[i, j] / rowtot[i] : "", formats[:pct_fmt_parens])
+                            LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, rowtot[i] > 0 ? x.array[i, j] / rowtot[i] : nothing, formats[:pct_fmt_parens])
                         end
                     end
                     # p-value - output only once
