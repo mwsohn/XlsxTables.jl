@@ -888,7 +888,7 @@ function dfxls(df::AbstractDataFrame,
         LibXLSXWriter.worksheet_write_string(t, r, c, string(varnames[i]), formats[:heading])
         r += 1
 
-        for j in start:(start+nrows-1)
+        for j in 1:nrow(df)
             # println("i = ",i,"; j = ",j,". value = ",df[j,i])
 
             if ismissing(df[j, i])
