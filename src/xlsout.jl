@@ -437,7 +437,7 @@ function bivariatexls(df::AbstractDataFrame,
     coltot = sum(collev.array, dims=1)
 
     # set column widths
-    worksheet_set_column(c, c, 40)
+    LibXLSXWriter.worksheet_set_column(t, c, c, 40)
     LibXLSXWriter.worksheet_set_column(t, c + 1, c + (nlev + 1) * 2 + 1, 9)
 
     # create header
