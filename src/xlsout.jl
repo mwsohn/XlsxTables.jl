@@ -710,7 +710,7 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
     col=0)
 
     # create a worksheet
-    t = LibXLSXWriter.workbook_add_worksheet(wsheet)
+    t = LibXLSXWriter.workbook_add_worksheet(wbook, wsheet)
 
     # attach formats to the workbook
     formats = create_formats(wbook)
@@ -791,15 +791,15 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
         col += 1
     end
 end
-# function univariatexls(df::DataFrame, contvars::Vector{Symbol}, wbook::AbstractString, wsheet::AbstractString;
-#     wt::Union{Nothing,Symbol}=nothing, row=0, col=0)
+function univariatexls(df::DataFrame, wbook::AbstractString, wsheet::AbstractString, contvars::Vector{Symbol};
+    wt::Union{Nothing,Symbol}=nothing, row=0, col=0)
 
-#     wb = workbook_new(wbook)
+    wb = workbook_new(wbook)
 
-#     univariatexls(df, contvars, wb, wsheet, wt=wt, row=row, col=col)
+    univariatexls(df, contvars, wb, wsheet, wt=wt, row=row, col=col)
 
-#     workbook_close(wb)
-# end
+    workbook_close(wb)
+end
 
 
 """
