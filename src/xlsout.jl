@@ -471,7 +471,7 @@ function bivariatexls(df::AbstractDataFrame,
     r += 2
     LibXLSXWriter.worksheet_write_string(t, r, c, "All, n (Row %)", formats[:model_name])
     # if wts == nothing
-    #     x = freqtable(df2, colvar, skipmissing=true)
+    x = freqtable(df2, colvar, skipmissing=true)
     # else
     #     x = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
     # end
@@ -497,11 +497,11 @@ function bivariatexls(df::AbstractDataFrame,
 
             # categorial
             df3 = df2[completecases(df2[:, [varname]]), [varname, colvar]]
-            if wts == nothing
-                x = freqtable(df3, varname, colvar, skipmissing=true)
-            else
-                x = freqtable(df3, varname, colvar, skipmissing=true, weights=df3[!, wts])
-            end
+            # if wts == nothing
+            x = freqtable(df3, varname, colvar, skipmissing=true)
+            # else
+            #     x = freqtable(df3, varname, colvar, skipmissing=true, weights=df3[!, wts])
+            # end
             rtmpnms = names(x, 1)
             rowval = Vector{CategoricalArrays.leveltype(rtmpnms)}(rtmpnms)
             rowtot = sum(x.array, dims=2)
