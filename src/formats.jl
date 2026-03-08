@@ -506,7 +506,7 @@ function create_formats(wb; fmt::Dict=format_defs)
     newfmts = Dict()
     for key in keys(fmt)
         fdict = fmt[key]
-        newfmts[key] = workbook_add_format(wb)
+        newfmts[key] = LibXLSXWriter.workbook_add_format(wb)
         for ff in keys(fdict)
             if ff in fmt_no_opt
                 fmt_function[ff](newfmts[key])
