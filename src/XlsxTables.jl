@@ -1,0 +1,35 @@
+module XlsxTables
+
+################################################################################
+##
+## Dependencies
+##
+################################################################################
+
+using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, DataStructures,
+    HypothesisTests, NamedArrays, FreqTables, Stella, TableMetadataTools, LogisticROC, 
+    Dates, OrderedCollections, AnalysisOfVariance
+
+##############################################################################
+##
+## Exported methods and types (in addition to everything reexported above)
+##
+##############################################################################
+
+export  univariatexls # output univariate statistics in an excel worksheet
+        # bivariatexls,  # output bivariate statistics in an excel worksheet
+        # glmxls,        # output GLM models to an excel worksheet
+        # mglmxls,       # output multiple GLM regression models to an excel spreadsheet
+        # dfxls,         # output dataframe in an excel file
+        # hltest
+       
+##############################################################################
+##
+## Load files
+##
+##############################################################################
+include("xlsout.jl")
+# include("mglmxls.jl")
+# include("formats.jl")
+
+end # module
