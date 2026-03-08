@@ -438,45 +438,45 @@ function bivariatexls(df::AbstractDataFrame,
 
     # set column widths
     worksheet_set_column(c, c, 40)
-    LibXLSXWriter.worksheet_set_column(c + 1, c + (nlev + 1) * 2 + 1, 9)
+    LibXLSXWriter.worksheet_set_column(t, c + 1, c + (nlev + 1) * 2 + 1, 9)
 
     # create header
     # column variable name
     # It uses three rows
-    LibXLSXWriter.worksheet_merge_range(r, c, r + 2, c, "Variable", formats[:heading])
+    LibXLSXWriter.worksheet_merge_range(t, r, c, r + 2, c, "Variable", formats[:heading])
 
     # header 1st row = variable name
-    LibXLSXWriter.worksheet_merge_range(r, c + 1, r, c + (nlev + 1) * 2 + 1, TableMetadataTools.label(df, colvar), formats[:heading])
+    LibXLSXWriter.worksheet_merge_range(t, r, c + 1, r, c + (nlev + 1) * 2 + 1, TableMetadataTools.label(df, colvar), formats[:heading])
 
     # header 2nd and 3rd rows
     r += 1
 
-    LibXLSXWriter.worksheet_merge_range(r, 1, r, 2, "All", formats[:heading])
-    LibXLSXWriter.worksheet_write_string(r + 1, 1, "N", formats[:n_fmt_right])
-    LibXLSXWriter.worksheet_write_string(r + 1, 2, "(%)", formats[:pct_fmt_parens])
+    LibXLSXWriter.worksheet_merge_range(t, r, 1, r, 2, "All", formats[:heading])
+    LibXLSXWriter.worksheet_write_string(t, r + 1, 1, "N", formats[:n_fmt_right])
+    LibXLSXWriter.worksheet_write_string(t, r + 1, 2, "(%)", formats[:pct_fmt_parens])
 
     # 
     c += 3
     for i = 1:nlev
-        LibXLSXWriter.worksheet_merge_range(r, c + (i - 1) * 2, r, c + (i - 1) * 2 + 1, string(colnms[i]), formats[:heading])
-        LibXLSXWriter.worksheet_write_string(r + 1, c + (i - 1) * 2, "N", formats[:n_fmt_right])
-        LibXLSXWriter.worksheet_write_string(r + 1, c + (i - 1) * 2 + 1, "(%)", formats[:pct_fmt_parens])
+        LibXLSXWriter.worksheet_merge_range(t, r, c + (i - 1) * 2, r, c + (i - 1) * 2 + 1, string(colnms[i]), formats[:heading])
+        LibXLSXWriter.worksheet_write_string(t, r + 1, c + (i - 1) * 2, "N", formats[:n_fmt_right])
+        LibXLSXWriter.worksheet_write_string(t, r + 1, c + (i - 1) * 2 + 1, "(%)", formats[:pct_fmt_parens])
     end
 
     # P-value
-    LibXLSXWriter.worksheet_merge_range(r, c + nlev * 2, r + 1, c + nlev * 2, "P-Value", formats[:heading])
+    LibXLSXWriter.worksheet_merge_range(t, r, c + nlev * 2, r + 1, c + nlev * 2, "P-Value", formats[:heading])
 
     # total
     c = col
     r += 2
-    LibXLSXWriter.worksheet_write_string(r, c, "All, n (Row %)", formats[:model_name])
+    LibXLSXWriter.worksheet_write_string(t, r, c, "All, n (Row %)", formats[:model_name])
     # if wts == nothing
     #     x = freqtable(df2, colvar, skipmissing=true)
     # else
     #     x = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
     # end
     tot = sum(x)
-    LibXLSXWriter.worksheet_write(t,r, c + 1, tot, formats[:n_fmt_right])
+    LibXLSXWriter.worksheet_write_number(t,r, c + 1, tot, formats[:n_fmt_right])
     LibXLSXWriter.worksheet_write_number(t,r, c + 2, 1.0, formats[:pct_fmt_parens])
     for i = 1:nlev
         LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, x.array[i], formats[:n_fmt_right])
@@ -513,7 +513,7 @@ function bivariatexls(df::AbstractDataFrame,
             # just output the frequency and percentage of the 1/true row
 
             # variable name
-            LibXLSXWriter.worksheet_write_string(r, c, vars, formats[:model_name])
+            LibXLSXWriter.worksheet_write_string(t, r, c, vars, formats[:model_name])
 
             # two levels with [0,1] or [false,true]
             if length(rowval) <= 2 && rowval in ([1], [true], ["Yes"], [0, 1], [false, true], ["No", "Yes"])
@@ -544,12 +544,12 @@ function bivariatexls(df::AbstractDataFrame,
                     LibXLSXWriter.worksheet_write_string(r, c + (i - 1) * 2 + 1, "", formats[:empty_right])
                     LibXLSXWriter.worksheet_write_string(r, c + (i - 1) * 2 + 2, "", formats[:empty_left])
                 end
-                LibXLSXWriter.worksheet_write_string(r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
+                LibXLSXWriter.worksheet_write_string(t, r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
 
                 r += 1
                 for i = 1:length(rowval)
                     # row value
-                    LibXLSXWriter.worksheet_write_string(r, c, string(rowval[i]), formats[:varname_1indent])
+                    LibXLSXWriter.worksheet_write_string(t, r, c, string(rowval[i]), formats[:varname_1indent])
 
                     # row total
                     LibXLSXWriter.worksheet_write_number(t,r, c + 1, rowtot[i], formats[:n_fmt_right])
@@ -574,7 +574,7 @@ function bivariatexls(df::AbstractDataFrame,
                     if length(rowval) == 1
                         LibXLSXWriter.worksheet_write_number(t,r, c + (nlev + 1) * 2, pval, formats[:p_fmt])
                     elseif i == 1
-                        LibXLSXWriter.worksheet_merge_range(r, c + (nlev + 1) * 2 + 1, r + length(rowval) - 1, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
+                        LibXLSXWriter.worksheet_merge_range(t, r, c + (nlev + 1) * 2 + 1, r + length(rowval) - 1, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
                     end
                     r += 1
                 end
@@ -585,7 +585,7 @@ function bivariatexls(df::AbstractDataFrame,
             y = tabstat(df3, varname, colvar, table=false) #, wt=df3[wt])
 
             # variable name
-            LibXLSXWriter.worksheet_write_string(r, c, string(vars, ", mean (SD)"), formats[:model_name])
+            LibXLSXWriter.worksheet_write_string(t, r, c, string(vars, ", mean (SD)"), formats[:model_name])
 
             # All
             tmpvec = collect(skipmissing(df3[!, varname]))
