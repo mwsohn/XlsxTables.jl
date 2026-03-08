@@ -624,7 +624,7 @@ function bivariatexls(df::AbstractDataFrame,
                 else
                     pvalue = @sprintf("%.3f",pval)
                 end
-                LibXLSXWriter.worksheet_write_string(t,r, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
+                LibXLSXWriter.worksheet_write_string(t,r, c + (nlev + 1) * 2 + 1, pvalue, formats[:p_fmt])
             end
 
             r += 1
