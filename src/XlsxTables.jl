@@ -8,9 +8,9 @@ module XlsxTables
 
 using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, DataStructures,
     HypothesisTests, NamedArrays, FreqTables, Stella, TableMetadataTools, LogisticROC, 
-    Dates, OrderedCollections, AnalysisOfVariance
+    Dates, OrderedCollections, AnalysisOfVariance, LibXLSXWriter
     
-using LibXLSXWriter: workbook_new, workbook_add_worksheet, workbook_add_format, format_set_bold, worksheet_set_column, worksheet_write_string, worksheet_write_number, worksheet_insert_image, workbook_close
+import LibXLSXWriter: workbook_new, workbook_add_worksheet, workbook_add_format, format_set_bold, worksheet_set_column, worksheet_write_string, worksheet_write_number, worksheet_insert_image, workbook_close
 
 ##############################################################################
 ##
