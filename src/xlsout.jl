@@ -712,7 +712,7 @@ function univariatexls(df::DataFrame,
     col=0)
 
     # create a worksheet
-    t = LibXLSXWriter.add_worksheet(wsheet)
+    t = LibXLSXWriter.workbook_add_worksheet(wsheet)
 
     # attach formats to the workbook
     formats = create_formats(wbook)
