@@ -874,7 +874,7 @@ function dfxls(df::AbstractDataFrame,
     typ = Vector{DataType}(undef, size(df, 2))
     for i = 1:ncol(df)
         if typeof(df[!, i]) <: CategoricalArray
-            typ[i] = eltype(df[!,i].pool.invindex.keys)
+            typ[i] = String # eltype(df[!,i].pool.invindex.keys)
         else
             typ[i] = nonmissingtype(eltype(df[!, i]))
         end
