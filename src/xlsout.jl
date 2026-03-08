@@ -720,8 +720,8 @@ function univariatexls(df::DataFrame, wbook, wsheet::AbstractString,
     c = col
 
     # column width
-    workbook_set_column(t, 0, 0, 20)
-    workbook_set_column(t, 1, length(contvars), 12)
+    LibXLSXWriter.workbook_set_column(t, 0, 0, 20)
+    LibXLSXWriter.workbook_set_column(t, 1, length(contvars), 12)
 
     # output the row names
     rownms = ["N Total", "N Miss", "N Used", "Sum", "Mean",
