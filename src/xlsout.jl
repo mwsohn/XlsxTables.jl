@@ -618,13 +618,13 @@ function bivariatexls(df::AbstractDataFrame,
             if size(y, 1) > 1
                 pval = AnalysisOfVariance.anova(df3, varname, colvar).pvalue[2]
                 if ismissing(pval) || isnan(pval) || isinf(pval)
-                    pval = ""
+                    pvalue = ""
                 elseif pval < 0.001
-                    pval = "< 0.001"
+                    pvalue = "< 0.001"
+                else
+                    pvalue = @sprintf("%.3f",pval)
                 end
                 LibXLSXWriter.worksheet_write_string(t,r, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
-            else
-                LibXLSXWriter.worksheet_write_string(t,t,r, c + (nlev + 1) * 2 + 1, "", formats[:p_fmt])
             end
 
             r += 1
