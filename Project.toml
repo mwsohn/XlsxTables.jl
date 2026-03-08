@@ -20,6 +20,7 @@ Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Survival = "8a913413-2070-5976-9d4c-2b364fdc2f7f"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 AnalysisOfVariance = "01c9c671-d471-43d2-8b89-3af15e6b824d"
+LibXLSXWriter = "d9c5391f-cdb8-42e0-9032-91a2542ec5a4"
 
 [compat]
 julia = "1.6"
@@ -40,3 +41,4 @@ Dates= "1"
 Survival = "0"
 OrderedCollections = "0,1"
 AnalysisOfVariance = "0"
+LibXLSXWriter = "0"
