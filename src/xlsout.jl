@@ -582,7 +582,7 @@ function bivariatexls(df::AbstractDataFrame,
         else
             # continuous variable
             df3 = df2[completecases(df2[!, [varname]]), [varname, colvar]]
-            y = tabstat(df3, varname, colvar)
+            y = combine(groupby(df3, colvar, sort=true), nrow => :n, varname => mean => :mean, varnbame => std => :sd) #tabstat(df3, varname, colvar)
 
             # variable name
             LibXLSXWriter.worksheet_write_string(t, r, c, string(vars, ", mean (SD)"), formats[:model_name])
@@ -609,8 +609,8 @@ function bivariatexls(df::AbstractDataFrame,
             for i = 1:nlev
                 sub = Dict(y.colnames .=> 1:length(y.colnames))
                 if i <= size(y.omat, 1) && y.omat[i, 1] > 1
-                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, y.omat[i, sub["mean"]], formats[:f_fmt_right])
-                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, y.omat[i, sub["sd"]], formats[:f_fmt_left_parens])
+                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, y[i, :mean], formats[:f_fmt_right])
+                    LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, y[i, :sd], formats[:f_fmt_left_parens])
                 else
                     LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 1, nothing, formats[:f_fmt_right])
                     LibXLSXWriter.worksheet_write_number(t,r, c + i * 2 + 2, nothing, formats[:f_fmt_left_parens])
