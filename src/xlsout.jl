@@ -862,7 +862,7 @@ function dfxls(df::AbstractDataFrame,
     row::Int64=0)
 
     # create a worksheet
-    t = workbook_add_worksheet(wbook, worksheet)
+    t = LibXLSXWriter.workbook_add_worksheet(wbook, worksheet)
 
     # attach formats to the workbook
     formats = create_formats(wbook)
@@ -884,8 +884,8 @@ function dfxls(df::AbstractDataFrame,
     for i = 1:size(df, 2)
 
         r = row
-        worksheet_set_column(t, c, c, 10)
-        worksheet_write_string(t, r, c, string(varnames[i]), formats[:heading])
+        LibXLSXWriter.worksheet_set_column(t, c, c, 10)
+        LibXLSXWriter.worksheet_write_string(t, r, c, string(varnames[i]), formats[:heading])
         r += 1
 
         for j in start:(start+nrows-1)
@@ -897,7 +897,7 @@ function dfxls(df::AbstractDataFrame,
                 if df[j, i] == ""
                     worksheet_write_string(t, r, c, " ", formats[:text])
                 else
-                    worksheet_write(t, r, c, df[j, i], formats[:text])
+                    worksheet_write_string(t, r, c, df[j, i], formats[:text])
                 end
             elseif typ[i] <: Number
                 if isnan(df[j, i]) || isinf(df[j, i])
@@ -908,7 +908,7 @@ function dfxls(df::AbstractDataFrame,
                     worksheet_write_number(t, r, c, df[j, i], formats[:f_fmt])
                 end
             elseif typ[i] <: Date
-                worksheet_write(r, c, Dates.value(df[j, i] - Date(1899, 12, 30)), formats[:f_date])
+                worksheet_write_number(t, r, c, Dates.value(df[j, i] - Date(1899, 12, 30)), formats[:f_date])
             elseif typ[i] <: DateTime
                 worksheet_write_number(t, r, c, (Dates.value(df[j, i] - DateTime(1899, 12, 30, 0, 0, 0))) / 86400000, formats[:f_datetime])
             elseif typ[i] == Symbol || typ[i] == DataType
