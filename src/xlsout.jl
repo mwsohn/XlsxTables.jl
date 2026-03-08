@@ -424,7 +424,7 @@ function bivariatexls(df::AbstractDataFrame,
     # number of columns
     # column values
     # if wts == nothing
-    #     collev = freqtable(df2, colvar, skipmissing=true)
+    collev = freqtable(df2, colvar, skipmissing=true)
     # else
     #     collev = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
     # end
@@ -470,11 +470,11 @@ function bivariatexls(df::AbstractDataFrame,
     c = col
     r += 2
     LibXLSXWriter.worksheet_write_string(r, c, "All, n (Row %)", formats[:model_name])
-    if wts == nothing
-        x = freqtable(df2, colvar, skipmissing=true)
-    else
-        x = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
-    end
+    # if wts == nothing
+    #     x = freqtable(df2, colvar, skipmissing=true)
+    # else
+    #     x = freqtable(df2, colvar, skipmissing=true, weights=df2[!, wts])
+    # end
     tot = sum(x)
     LibXLSXWriter.worksheet_write(t,r, c + 1, tot, formats[:n_fmt_right])
     LibXLSXWriter.worksheet_write_number(t,r, c + 2, 1.0, formats[:pct_fmt_parens])
