@@ -61,9 +61,6 @@ function glmxls(glmout,
     labels=nothing,
     adjust=true)
 
-    # take care of issues with nan/inf
-    # wbook.nan_inf_to_errors = true
-
     num_models = length(glmout)
     otype = Vector(undef, num_models)
     if isa(glmout[1].model, GeneralizedLinearModel)
