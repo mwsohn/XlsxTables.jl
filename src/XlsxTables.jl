@@ -33,7 +33,9 @@ export  univariatexls,   # output univariate statistics in an excel worksheet
 ##
 ##############################################################################
 include("xlsout.jl")
-# include("mglmxls.jl")
+include("glmxls.jl")
+include("format_defs.jl")
 include("formats.jl")
+
 
 end # module
