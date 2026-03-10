@@ -54,11 +54,10 @@ function bivariatexls(df::AbstractDataFrame,
     wsheet::AbstractString,
     colvar::Symbol,
     rowvars::Vector{Symbol};
-    column_percent = false
-    )
+    column_percent = false,
+    row = 0,
+    col = 0)
 
-    row = 0
-    col = 0
 
     # colvar has to be a CategoricalArray and must have 2 or more categories
     if isa(df[!, colvar], CategoricalArray) == false || length(levels(df[!, colvar])) < 2
