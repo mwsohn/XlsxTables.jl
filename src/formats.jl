@@ -2,72 +2,103 @@
 fmt_no_opt = ("bold", "italic", "font_strikeout", "unlocked", "hidden", "text_wrap",
     "shrink", "quote_prefix")
 
-# alignment mapping
-fmt_align = Dict(
-    "none" => 0,
-    "left" => 1,
-    "center" => 2,
-    "right" => 3,
-    "fill" => 4,
-    "justify" => 5,
-    "center_across" => 6,
-    "distributed" => 7
-)
+fmtdict = Dict(
+    # alignment mapping
+    "align" => Dict(
+        "none" => 0,
+        "left" => 1,
+        "center" => 2,
+        "right" => 3,
+        "fill" => 4,
+        "justify" => 5,
+        "center_across" => 6,
+        "distributed" => 7
+    ),
 
-# vertical alignment mapping
-fmt_valign = Dict(
-    "top" => 8,
-    "bottom" => 9,
-    "vcenter" => 10,
-    "justify" => 11,
-    "vdistributed" => 12
-)
+    # vertical alignment mapping
+    "valign" => Dict(
+        "top" => 8,
+        "bottom" => 9,
+        "vcenter" => 10,
+        "justify" => 11,
+        "vdistributed" => 12
+    ),
 
-# diagonal line 
-fmt_diag = Dict("up" => 1, "down" => 2, "up_down" => 3)
+    # diagonal line 
+    "diag" => Dict("up" => 1, "down" => 2, "up_down" => 3),
 
-# underline type
-fmt_underline = Dict("none" => 0, "single" => 1, "double" => 2, "single_accounting" => 3, "double_accounting" => 4)
+    # underline type
+    "underline" => Dict(
+        "none" => 0,
+        "single" => 1,
+        "double" => 2,
+        "single_accounting" => 3,
+        "double_accounting" => 4
+    ),
 
-# subscript/superscript type
-fmt_script = Dict("superscript" => 1, "subscript" => 2)
+    # subscript/superscript type
+    "script" => Dict("superscript" => 1, "subscript" => 2),
 
-# color mapping
-fmt_color = Dict(
-    "black" => 16777216,
-    "blue" => 255,
-    "brown" => 8388608,
-    "cyan" => 65535,
-    "gray" => 8421504,
-    "green" => 32768,
-    "lime" => 65280,
-    "magenta" => 16711935,
-    "navy" => 128,
-    "orange" => 16737792,
-    "pink" => 16711935,
-    "purple" => 8388736,
-    "red" => 16711680,
-    "silver" => 12632256,
-    "white" => 16777215,
-    "yellow" => 16776960
-)
+    # color mapping
+    "color" => Dict(
+        "black" => 16777216,
+        "blue" => 255,
+        "brown" => 8388608,
+        "cyan" => 65535,
+        "gray" => 8421504,
+        "green" => 32768,
+        "lime" => 65280,
+        "magenta" => 16711935,
+        "navy" => 128,
+        "orange" => 16737792,
+        "pink" => 16711935,
+        "purple" => 8388736,
+        "red" => 16711680,
+        "silver" => 12632256,
+        "white" => 16777215,
+        "yellow" => 16776960
+    ),
 
-# border thickness
-fmt_border = Dict(
-    "none" => 0,
-    "thin" => 1,
-    "thin" => 2,
-    "dashed" => 3,
-    "dotted" => 4,
-    "thick" => 5,
-    "double" => 6,
-    "hair" => 7,
-    "thin_dashed" => 8,
-    "dash_dot" => 9,
-    "thin_dash_dot" => 10,
-    "dash_dot_dot" => 11,
-    "thin_dash_dot_dot" => 12,
-    "slant_dash_dot" => 13
+    # border thickness
+    "border" => Dict(
+        "none" => 0,
+        "thin" => 1,
+        "thin" => 2,
+        "dashed" => 3,
+        "dotted" => 4,
+        "thick" => 5,
+        "double" => 6,
+        "hair" => 7,
+        "thin_dashed" => 8,
+        "dash_dot" => 9,
+        "thin_dash_dot" => 10,
+        "dash_dot_dot" => 11,
+        "thin_dash_dot_dot" => 12,
+        "slant_dash_dot" => 13
+    ),
+
+    # pattern
+    "pattern" => Dict(
+        "none" => 0,
+        "solid" => 1,
+        "medium_gray" => 2,
+        "dark_gray" => 3,
+        "light_gray" => 4,
+        "dark_horizontal" => 5,
+        "dark_vertical" => 6,
+        "dark_down" => 7,
+        "dark_up" => 8,
+        "dark_grid" => 9,
+        "dark_trellis" => 10,
+        "light_horizontal" => 11,
+        "light_vertical" => 12,
+        "light_down" => 13,
+        "light_up" => 14,
+        "light_grid" => 15,
+        "light_trellis" => 16,
+        "gray_125" => 17,
+        "gray_0625" => 18
+    )
 )
 
 # all format functions
@@ -114,26 +145,32 @@ fmt_function = Dict{String,Function}(
 # function to create format
 function create_formats(wb; fmt::Dict=format_defs)
     newfmts = Dict()
+    if haskey(fmt,:global)
+        fglobal = fmt[:global]
+    end
     for key in keys(fmt)
+        if key == :global
+            continue
+        end
         fdict = fmt[key]
         newfmts[key] = LibXLSXWriter.workbook_add_format(wb)
-        for ff in keys(fdict)
+        for ff in keys(merge(fglobal,fdict))
             if ff in fmt_no_opt
                 fmt_function[ff](newfmts[key])
-            elseif ff == "align"
-                fmt_function[ff](newfmts[key], fmt_align[fdict[ff]])
-            elseif ff == "valign"
-                fmt_function[ff](newfmts[key], fmt_valign[fdict[ff]])
-            elseif ff == "diag"
-                fmt_function[ff](newfmts[key], fmt_diag[fdict[ff]])
-            elseif ff == "underline"
-                fmt_function[ff](newfmts[key], fmt_underline[fdict[ff]])
-            elseif ff == "script"
-                fmt_function[ff](newfmts[key], fmt_script[fdict[ff]])
-            elseif ff == "font_color"
-                fmt_function[ff](newfmts[key], fmt_color[fdict[ff]])
-            elseif ff in ("border", "left", "top", "right", "bottom")
-                fmt_function[ff](newfmts[key], fmt_border[fdict[ff]])
+            elseif haskey(ff,fmtdict)
+                fmt_function[ff](newfmts[key], fmtdict[ff][fdict[ff]])
+            # elseif ff == "valign"
+            #     fmt_function[ff](newfmts[key], fmt_valign[fdict[ff]])
+            # elseif ff == "diag"
+            #     fmt_function[ff](newfmts[key], fmt_diag[fdict[ff]])
+            # elseif ff == "underline"
+            #     fmt_function[ff](newfmts[key], fmt_underline[fdict[ff]])
+            # elseif ff == "script"
+            #     fmt_function[ff](newfmts[key], fmt_script[fdict[ff]])
+            # elseif ff == "font_color"
+            #     fmt_function[ff](newfmts[key], fmt_color[fdict[ff]])
+            # elseif ff in ("border", "left", "top", "right", "bottom")
+            #     fmt_function[ff](newfmts[key], fmt_border[fdict[ff]])
             else
                 fmt_function[ff](newfmts[key], fdict[ff])
             end
