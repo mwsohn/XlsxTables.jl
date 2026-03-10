@@ -160,7 +160,7 @@ function create_formats(wb; fmt::Dict=format_defs)
         for ff in keys(merge(fglobal,fdict))
             if ff in fmt_no_opt
                 fmt_function[ff](newfmts[key])
-            elseif haskey(ff,fmtdict)
+            elseif haskey(fmtdict,ff)
                 fmt_function[ff](newfmts[key], fmtdict[ff][fdict[ff]])
             # elseif ff == "align"
             #     fmt_function[ff](newfmts[key], fmt_align[fdict[ff]])
