@@ -37,7 +37,10 @@ fmtdict = Dict(
     ),
 
     # subscript/superscript type
-    "script" => Dict("superscript" => 1, "subscript" => 2),
+    "script" => Dict(
+        "superscript" => 1,
+        "subscript" => 2
+    ),
 
     # color mapping
     "color" => Dict(
@@ -159,6 +162,8 @@ function create_formats(wb; fmt::Dict=format_defs)
                 fmt_function[ff](newfmts[key])
             elseif haskey(ff,fmtdict)
                 fmt_function[ff](newfmts[key], fmtdict[ff][fdict[ff]])
+            # elseif ff == "align"
+            #     fmt_function[ff](newfmts[key], fmt_align[fdict[ff]])
             # elseif ff == "valign"
             #     fmt_function[ff](newfmts[key], fmt_valign[fdict[ff]])
             # elseif ff == "diag"
