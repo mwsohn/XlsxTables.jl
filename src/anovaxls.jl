@@ -21,6 +21,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
         :int_right_b => Dict("num_format" => "#,##0", "align" => "right", "top" => "thin", "bottom" => "thin"),
         :f_fmt_b => Dict("num_format" => "#,##0.000", "align" => "right", "top" => "thin", "bottom" => "thin")
     )
+
     # attach formats to the workbook
     formats = create_formats(wbook,fmt=fmts)
 
@@ -29,7 +30,6 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     c = col
 
     # set column widths
-    nlev = length
     LibXLSXWriter.worksheet_set_column(t, c, c, 30)
     LibXLSXWriter.worksheet_set_column(t, c + 1, c + 5, 10)
 
