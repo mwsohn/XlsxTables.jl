@@ -22,7 +22,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
         :f_fmt_b => Dict("num_format" => "#,##0.000", "align" => "right", "top" => "thin", "bottom" => "thin")
     )
     # attach formats to the workbook
-    formats = create_formats(wbook)
+    formats = create_formats(wbook,fmt=fmts)
 
     # starting row and column
     r = row
