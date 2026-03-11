@@ -146,7 +146,7 @@ fmt_function = Dict{String,Function}(
 )
 
 # function to create format
-function xcreate_formats(wb; fmt::Dict=format_defs)
+function create_formats(wb; fmt::Dict=format_defs)
     newfmts = Dict()
     if haskey(fmt, :global)
         fglobal = fmt[:global]
