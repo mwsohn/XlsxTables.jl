@@ -36,6 +36,7 @@ include("xlsout.jl")
 include("glmxls.jl")
 include("format_defs.jl")
 include("formats.jl")
+include("anovaxls.jl")
 
 
 end # module
