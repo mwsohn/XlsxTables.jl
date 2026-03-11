@@ -146,36 +146,27 @@ fmt_function = Dict{String,Function}(
 )
 
 # function to create format
-function create_formats(wb; fmt::Dict=format_defs)
+function xcreate_formats(wb; fmt::Dict=format_defs)
     newfmts = Dict()
-    if haskey(fmt,:global)
+    if haskey(fmt, :global)
         fglobal = fmt[:global]
     end
     for key in keys(fmt)
         if key == :global
             continue
         end
-        fdict = fmt[key]
+        # fdict = fmt[key]
         newfmts[key] = LibXLSXWriter.workbook_add_format(wb)
-        for ff in keys(merge(fglobal,fdict))
+        fdict = merge(fglobal, fmt[key])
+        for ff in keys(fdict)
             if ff in fmt_no_opt
                 fmt_function[ff](newfmts[key])
-            elseif haskey(fmtdict,ff)
+            elseif haskey(fmtdict, ff)
                 fmt_function[ff](newfmts[key], fmtdict[ff][fdict[ff]])
-            # elseif ff == "align"
-            #     fmt_function[ff](newfmts[key], fmt_align[fdict[ff]])
-            # elseif ff == "valign"
-            #     fmt_function[ff](newfmts[key], fmt_valign[fdict[ff]])
-            # elseif ff == "diag"
-            #     fmt_function[ff](newfmts[key], fmt_diag[fdict[ff]])
-            # elseif ff == "underline"
-            #     fmt_function[ff](newfmts[key], fmt_underline[fdict[ff]])
-            # elseif ff == "script"
-            #     fmt_function[ff](newfmts[key], fmt_script[fdict[ff]])
-            # elseif ff == "font_color"
-            #     fmt_function[ff](newfmts[key], fmt_color[fdict[ff]])
-            # elseif ff in ("border", "left", "top", "right", "bottom")
-            #     fmt_function[ff](newfmts[key], fmt_border[fdict[ff]])
+            elseif ff in ("border", "left", "top", "right", "bottom")
+                fmt_function[ff](newfmts[key], fmtdict["border"][fdict[ff]])
+            elseif contains(ff, "_color") # ff in ("font_color","borer_color","left_color","top_color","right_color","bottom_color","fg_color","bg_color","font_color")
+                fmt_function[ff](newfmts[key], fmtdict["color"][fdict[ff]])
             else
                 fmt_function[ff](newfmts[key], fdict[ff])
             end
@@ -184,3 +175,5 @@ function create_formats(wb; fmt::Dict=format_defs)
     end
     return newfmts
 end
+
+
