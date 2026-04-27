@@ -79,7 +79,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                     elseif v < 0.001
                         LibXLSXWriter.worksheet_write_string(t, r, c, "< 0.001", formats[:str_right])
                     else
-                        LibXLSXWriter.worksheet_write_string(t, r, c, v, formats[:f_fmt])
+                        LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:f_fmt])
                     end
                 else
                     LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:f_fmt])
