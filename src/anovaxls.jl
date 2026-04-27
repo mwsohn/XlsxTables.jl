@@ -10,7 +10,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
 
     # formats for the table
     fmts = Dict(
-        :global => Dict("font_name" => "Arial", "font_size" => 9)
+        :global => Dict("font_name" => "Arial", "font_size" => 9),
         :heading => Dict("align" => "center", "top" => "thin", "bottom" => "thin"),
         :heading_right => Dict("align" => "right","top" => "thin", "bottom" => "thin","right" => "thin"),
         :source_name => Dict("align" => "right", "right" => "thin"),
