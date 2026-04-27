@@ -47,14 +47,16 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     # rows first and then columns
     c = col
     r += 1
-    mm = [anov.title, anov.ss, anov.df, anov.ms, anov.F, anov.pvalue]
-    for (i,m) in enumerate(mm)
-        for (j,v) in enumerate(vv)
+    mm = hcat(anov.title, anov.ss, anov.df, anov.ms, anov.F, anov.pvalue)
+    dims = size(mm)
+    for i in 1:dims[2]
+        for j in 1:dims[1]
+            v = mm[i, j]
             if ismissing(v)
                 continue # do not output data
             end
 
-            if j == length(mm[i]) # last row fot "Total" - output with top and bottom borders
+            if j == dims[1] # last row ofo "Total" - output with top and bottom borders
                 if i == 1
                     LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:source_name_b])
                 elseif i == 3 # integer
