@@ -19,7 +19,6 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
         :pvalue => Dict("align" => "right"),
         :str_right => Dict("align" => "right"),
         :f_fmt => Dict("num_format" => "#,##0.000", "align" => "right"),
-        :source_name_b => Dict("right" => "thin", "top" => "thin", "bottom" => "thin"),
         :int_right_b => Dict("num_format" => "#,##0", "align" => "right", "top" => "thin", "bottom" => "thin"),
         :str_right_b => Dict("align" => "right", "top" => "thin", "bottom" => "thin"),
         :f_fmt_b => Dict("num_format" => "#,##0.000", "align" => "right", "top" => "thin", "bottom" => "thin")
@@ -34,7 +33,11 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
 
     # set column widths
     LibXLSXWriter.worksheet_set_column(t, c, c, 20)
-    LibXLSXWriter.worksheet_set_column(t, c + 1, c + 5, 15)
+    LibXLSXWriter.worksheet_set_column(t, c + 1, c + 1, 15)
+    LibXLSXWriter.worksheet_set_column(t, c + 2, c + 2, 8)
+    LibXLSXWriter.worksheet_set_column(t, c + 3, c + 3, 15)
+    LibXLSXWriter.worksheet_set_column(t, c + 4, c + 5, 8)
+
 
     # header
     header = ["Source", "SS", "DF", "MS", "F", "P"]
