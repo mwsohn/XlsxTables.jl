@@ -20,6 +20,7 @@ import LibXLSXWriter: workbook_new, workbook_add_worksheet, workbook_add_format,
 
 export  univariatexls,   # output univariate statistics in an excel worksheet
         dfxls,
+        anovaxls,
         create_formats
         # bivariatexls,  # output bivariate statistics in an excel worksheet
         # glmxls,        # output GLM models to an excel worksheet
