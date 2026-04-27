@@ -16,7 +16,6 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
         :source_name => Dict("align" => "right", "right" => "thin"),
         :source_name_b => Dict("align" => "right", "right" => "thin", "top" => "thin", "bottom" => "thin"),
         :int_right => Dict("num_format" => "#,##0", "align" => "right"),
-        :pvalue => Dict("align" => "right"),
         :str_right => Dict("align" => "right"),
         :f_fmt => Dict("num_format" => "#,##0.000", "align" => "right"),
         :int_right_b => Dict("num_format" => "#,##0", "align" => "right", "top" => "thin", "bottom" => "thin"),
@@ -80,7 +79,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                     elseif v < 0.001
                         LibXLSXWriter.worksheet_write_string(t, r, c, "< 0.001", formats[:str_right])
                     else
-                        LibXLSXWriter.worksheet_write_string(t, r, c, @sprintf("%.3f", v), formats[:str_right])
+                        LibXLSXWriter.worksheet_write_string(t, r, c, v, formats[:f_fmt])
                     end
                 else
                     LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:f_fmt])
