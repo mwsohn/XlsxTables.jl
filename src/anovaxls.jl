@@ -67,7 +67,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                 end
             else
                 if j == 1 # source
-                    LibXLSXWriter.worksheet_write_string(t, r, c, string(v), formats[:source_name])
+                    LibXLSXWriter.worksheet_write_string(t, r, c, string(v," "), formats[:source_name])
                 elseif j == 3 # DF
                     LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:int_right])
                 elseif j in (5,6) # F and p-values
