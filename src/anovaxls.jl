@@ -42,7 +42,11 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     # header
     header = ["Source", "SS", "DF", "MS", "F", "P"]
     for v in header
-        LibXLSXWriter.worksheet_write_string(t, r, c, v, formats[:heading_right]) 
+        if c == col
+            LibXLSXWriter.worksheet_write_string(t, r, c, v, formats[:heading_right]) 
+        else
+            LibXLSXWriter.worksheet_write_string(t, r, c, v, formats[:heading])
+        end
         c += 1
     end
 
