@@ -66,14 +66,14 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                 end
             else
                 if i == 1
-                    LibXLSXWriter.worksheet_write_string(t, c, r, v, formats[:source_name])
+                    LibXLSXWriter.worksheet_write_string(t, c, r, string(v), formats[:source_name])
                 elseif i == 3 # integer
                     LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:int_right])
                 elseif i == 6 # p-values
                     if v < 0.001
                         LibXLSXWriter.worksheet_write_string(t, c, r, "< 0.001", formats[:pvalue])
                     else
-                        LibXLSXWriter.worksheet_write_number(t, c, r, @sprintf("%.3f", v), formats[:f_fmt])
+                        LibXLSXWriter.worksheet_write_string(t, c, r, @sprintf("%.3f", v), formats[:f_fmt])
                     end
                 else
                     LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:f_fmt])
