@@ -155,17 +155,16 @@ function create_formats(wb; fmt::Dict=format_defs)
         if key == :global
             continue
         end
-        # fdict = fmt[key]
         newfmts[key] = LibXLSXWriter.workbook_add_format(wb)
         fdict = merge(fglobal, fmt[key])
         for ff in keys(fdict)
             if ff in fmt_no_opt
-                fmt_function[ff](newfmts[key])
+                fmt_function[ff](newfmts[key]) 
             elseif haskey(fmtdict, ff)
                 fmt_function[ff](newfmts[key], fmtdict[ff][fdict[ff]])
             elseif ff in ("border", "left", "top", "right", "bottom")
                 fmt_function[ff](newfmts[key], fmtdict["border"][fdict[ff]])
-            elseif contains(ff, "_color") # ff in ("font_color","borer_color","left_color","top_color","right_color","bottom_color","fg_color","bg_color","font_color")
+            elseif contains(ff, "_color")
                 fmt_function[ff](newfmts[key], fmtdict["color"][fdict[ff]])
             else
                 fmt_function[ff](newfmts[key], fdict[ff])
