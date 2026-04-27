@@ -33,15 +33,15 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
 
     # set column widths
     LibXLSXWriter.worksheet_set_column(t, c, c, 30)
-    LibXLSXWriter.worksheet_set_column(t, c + 1, c + 5, 10)
+    LibXLSXWriter.worksheet_set_column(t, c + 1, c + 5, 20)
 
     # header
     header = ["Source", "SS", "df", "MS", "F", "P"]
     for v in header
         if c == col # Source will have right border
-            LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:heading_right])    
+            LibXLSXWriter.worksheet_write_string(t,r,c,v,formats[:heading_right])    
         else
-            LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:heading])
+            LibXLSXWriter.worksheet_write_string(t,r,c,v,formats[:heading])
         end
         c += 1
     end
@@ -83,6 +83,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
             c += 1
         end
         r += 1
+        c = col
     end
 end
 function anovaxls(anov::ANOVA, wb::String, wsheet::String; row=0, col=0)
