@@ -19,6 +19,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
         :f_fmt => Dict("num_format" => "#,##0.000","align" => "right"),
         :source_name_b => Dict("right" => "thin", "top" => "thin", "bottom" => "thin"),
         :int_right_b => Dict("num_format" => "#,##0", "align" => "right", "top" => "thin", "bottom" => "thin"),
+        :str_right_b => Dict("align" => "right", "top" => "thin", "bottom" => "thin"),
         :f_fmt_b => Dict("num_format" => "#,##0.000", "align" => "right", "top" => "thin", "bottom" => "thin")
     )
 
@@ -49,31 +50,35 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     r += 1
     mm = hcat(anov.title, anov.ss, anov.df, anov.ms, anov.F, anov.pvalue)
     dims = size(mm)
-    for i in 1:dims[2]
-        for j in 1:dims[1]
+    for i in 1:dims[1] # rows
+        for j in 1:dims[2] # columns
             v = mm[i, j]
-            if ismissing(v)
-                continue # do not output data
-            end
+            # if ismissing(v)
+            #     continue # do not output data
+            # end
 
-            if j == dims[1] # last row ofo "Total" - output with top and bottom borders
-                if i == 1
+            if i == dims[1] # last row ofo "Total" - output with top and bottom borders
+                if j == 1 # source
                     LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:source_name_b])
-                elseif i == 3 # integer
+                elseif j == 3 # DF
                     LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:int_right_b])
+                elseif ismissing(v)
+                    LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right_b])
                 else
                     LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:f_fmt_b])
                 end
             else
-                if i == 1
+                if j == 1 # source
                     LibXLSXWriter.worksheet_write_string(t, c, r, string(v), formats[:source_name])
-                elseif i == 3 # integer
+                elseif j == 3 # DF
                     LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:int_right])
-                elseif i == 6 # p-values
+                elseif j == 6 # p-values
                     if v < 0.001
                         LibXLSXWriter.worksheet_write_string(t, c, r, "< 0.001", formats[:pvalue])
+                    elseif !ismissing(v)
+                        LibXLSXWriter.worksheet_write_string(t, c, r, @sprintf("%.3f", v), formats[:str_right_b])
                     else
-                        LibXLSXWriter.worksheet_write_string(t, c, r, @sprintf("%.3f", v), formats[:f_fmt])
+                        LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right_b])
                     end
                 else
                     LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:f_fmt])
