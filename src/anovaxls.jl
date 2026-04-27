@@ -37,7 +37,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     header = ["Source", "SS", "df", "MS", "F", "P"]
     for v in header
         if c == col # Source will have right border
-            LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:heading_r_border])    
+            LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:heading_right])    
         else
             LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:heading])
         end
