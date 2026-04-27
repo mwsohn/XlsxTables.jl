@@ -42,11 +42,6 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     # header
     header = ["Source", "SS", "DF", "MS", "F", "P"]
     for v in header
-        # if c == col # Source will have right border
-        #     LibXLSXWriter.worksheet_write_string(t,r,c,v,formats[:heading_right])    
-        # else
-        #     LibXLSXWriter.worksheet_write_string(t,r,c,v,formats[:heading])
-        # end
         LibXLSXWriter.worksheet_write_string(t, r, c, v, formats[:heading])
         c += 1
     end
@@ -62,7 +57,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
 
             if i == dims[1] # last row ofo "Total" - output with top and bottom borders
                 if j == 1 # source
-                    LibXLSXWriter.worksheet_write_string(t, r, c,v,formats[:source_name_b])
+                    LibXLSXWriter.worksheet_write_string(t, r, c,string(v," "),formats[:source_name_b])
                 elseif j == 3 # DF
                     LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:int_right_b])
                 elseif ismissing(v)
