@@ -47,44 +47,44 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     end
 
     # rows first and then columns
-    c = col
-    r += 1
-    mm = hcat(anov.title, anov.ss, anov.df, anov.ms, anov.F, anov.pvalue)
-    dims = size(mm)
-    for i in 1:dims[1] # rows
-        for j in 1:dims[2] # columns
-            v = mm[i, j]
+    # c = col
+    # r += 1
+    # mm = hcat(anov.title, anov.ss, anov.df, anov.ms, anov.F, anov.pvalue)
+    # dims = size(mm)
+    # for i in 1:dims[1] # rows
+    #     for j in 1:dims[2] # columns
+    #         v = mm[i, j]
 
-            if i == dims[1] # last row ofo "Total" - output with top and bottom borders
-                if j == 1 # source
-                    LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:source_name_b])
-                elseif j == 3 # DF
-                    LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:int_right_b])
-                elseif ismissing(v)
-                    LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right_b])
-                else
-                    LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:f_fmt_b])
-                end
-            else
-                if j == 1 # source
-                    LibXLSXWriter.worksheet_write_string(t, c, r, string(v), formats[:source_name])
-                elseif j == 3 # DF
-                    LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:int_right])
-                elseif j in (5,6) # F and p-values
-                    if ismissing(v)
-                        LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right_b])
-                    elseif v < 0.001
-                        LibXLSXWriter.worksheet_write_string(t, c, r, "< 0.001", formats[:str_right])
-                    else
-                        LibXLSXWriter.worksheet_write_string(t, c, r, @sprintf("%.3f", v), formats[:str_right_b])
-                    end
-                end
-            end
-            c += 1
-        end
-        r += 1
-        c = col
-    end
+    #         if i == dims[1] # last row ofo "Total" - output with top and bottom borders
+    #             if j == 1 # source
+    #                 LibXLSXWriter.worksheet_write_string(t,c,r,v,formats[:source_name_b])
+    #             elseif j == 3 # DF
+    #                 LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:int_right_b])
+    #             elseif ismissing(v)
+    #                 LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right_b])
+    #             else
+    #                 LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:f_fmt_b])
+    #             end
+    #         else
+    #             if j == 1 # source
+    #                 LibXLSXWriter.worksheet_write_string(t, c, r, string(v), formats[:source_name])
+    #             elseif j == 3 # DF
+    #                 LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:int_right])
+    #             elseif j in (5,6) # F and p-values
+    #                 if ismissing(v)
+    #                     LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right_b])
+    #                 elseif v < 0.001
+    #                     LibXLSXWriter.worksheet_write_string(t, c, r, "< 0.001", formats[:str_right])
+    #                 else
+    #                     LibXLSXWriter.worksheet_write_string(t, c, r, @sprintf("%.3f", v), formats[:str_right_b])
+    #                 end
+    #             end
+    #         end
+    #         c += 1
+    #     end
+    #     r += 1
+    #     c = col
+    # end
 end
 function anovaxls(anov::ANOVA, wb::String, wsheet::String; row=0, col=0)
     wbook = LibXLSXWriter.workbook_new(wb)
