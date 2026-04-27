@@ -32,8 +32,8 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
     c = col
 
     # set column widths
-    LibXLSXWriter.worksheet_set_column(t, c, c, 30)
-    LibXLSXWriter.worksheet_set_column(t, c + 1, c + 5, 20)
+    LibXLSXWriter.worksheet_set_column(t, c, c, 20)
+    LibXLSXWriter.worksheet_set_column(t, c + 1, c + 5, 150)
 
     # header
     header = ["Source", "SS", "DF", "MS", "F", "P"]
@@ -72,11 +72,11 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                     LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:int_right])
                 elseif j in (5,6) # F and p-values
                     if ismissing(v)
-                        LibXLSXWriter.worksheet_write_string(t, r, c, "", formats[:str_right_b])
+                        LibXLSXWriter.worksheet_write_string(t, r, c, "", formats[:str_right])
                     elseif v < 0.001
                         LibXLSXWriter.worksheet_write_string(t, r, c, "< 0.001", formats[:str_right])
                     else
-                        LibXLSXWriter.worksheet_write_string(t, r, c, @sprintf("%.3f", v), formats[:str_right_b])
+                        LibXLSXWriter.worksheet_write_string(t, r, c, @sprintf("%.3f", v), formats[:str_right])
                     end
                 end
             end
