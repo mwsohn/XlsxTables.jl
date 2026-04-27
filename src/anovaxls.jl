@@ -80,9 +80,9 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                     else
                         LibXLSXWriter.worksheet_write_string(t, r, c, @sprintf("%.3f", v), formats[:str_right])
                     end
+                else
+                    LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:f_fmt])
                 end
-            else
-                LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:f_fmt])
             end
             c += 1
         end
