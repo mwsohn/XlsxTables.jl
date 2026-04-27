@@ -21,6 +21,7 @@ OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 AnalysisOfVariance = "01c9c671-d471-43d2-8b89-3af15e6b824d"
 LibXLSXWriter = "d9c5391f-cdb8-42e0-9032-91a2542ec5a4"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 
 [compat]
 julia = "1.6"
@@ -42,3 +43,4 @@ OrderedCollections = "0,1"
 AnalysisOfVariance = "0"
 LibXLSXWriter = "0"
 Printf = "1"
+Reexport = "0,1"
