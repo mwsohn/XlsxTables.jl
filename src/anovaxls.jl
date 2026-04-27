@@ -14,7 +14,8 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
         :heading => Dict("align" => "center", "top" => "thin", "bottom" => "thin"),
         :heading_right => Dict("align" => "right","top" => "thin", "bottom" => "thin","right" => "thin"),
         :source_name => Dict("align" => "right", "right" => "thin"),
-        :int_right => Dict("num_format" => "#,##0","align" => "right"),
+        :source_name_b => Dict("align" => "right", "right" => "thin", "top" => "thin", "bottom" => "thin"),
+        :int_right => Dict("num_format" => "#,##0", "align" => "right"),
         :pvalue => Dict("align" => "right"),
         :str_right => Dict("align" => "right"),
         :f_fmt => Dict("num_format" => "#,##0.000", "align" => "right"),
@@ -80,6 +81,8 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                         LibXLSXWriter.worksheet_write_string(t, r, c, @sprintf("%.3f", v), formats[:str_right])
                     end
                 end
+            else
+                LibXLSXWriter.worksheet_write_number(t, r, c, v, formats[:f_fmt])
             end
             c += 1
         end
