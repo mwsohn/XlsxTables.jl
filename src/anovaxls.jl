@@ -80,9 +80,9 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                     end
                 end
             end
-            r += 1
+            c += 1
         end
-        c += 1
+        r += 1
     end
 end
 function anovaxls(anov::ANOVA, wb::String, wsheet::String; row=0, col=0)
