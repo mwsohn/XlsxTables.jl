@@ -82,7 +82,7 @@ function anovaxls(anov::ANOVA, wbook::Ptr, wsheet::String; row=0, col=0)
                         LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right_b])
                     end
                 elseif ismissing(v)
-                    LibXLSXWriter.worksheet_write_number(t, c, r, "", formats[:str_right])
+                    LibXLSXWriter.worksheet_write_string(t, c, r, "", formats[:str_right])
                 else
                     LibXLSXWriter.worksheet_write_number(t, c, r, v, formats[:f_fmt])
                 end
