@@ -38,6 +38,7 @@ include("glmxls.jl")
 include("format_defs.jl")
 include("formats.jl")
 include("anovaxls.jl")
+include("helpers.jl")
 
 
 end # module
