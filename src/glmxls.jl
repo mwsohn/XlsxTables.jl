@@ -381,7 +381,7 @@ function glmxls(glmout,
 
                 # Hosmer-Lemeshow GOF test
                 worksheet_write_string(t, r + 3, c, "Hosmer-Lemeshow Chisq Test (df), p-value", formats[:model_name])
-                hl = hltest(glmout[i])
+                hl = XlsxTables.hltest(glmout[i])
                 worksheet_merge_range(t, r + 3, c + 1, r + 3, c + 4, @sprintf("%.4f (%d); p = %.4f",hl[1], hl[2], hl[3]), formats[:str_c_b])
 
                 # ROC (c-statistic)
