@@ -56,7 +56,8 @@ format_defs = Dict(
         "valign" => "vcenter",
         "top" => "thin",
         "left" => "thin",
-        "bottom" => "thin"
+        "bottom" => "thin",
+        "right" => "thin"
     ),
 
     :model_name => Dict(
