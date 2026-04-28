@@ -347,7 +347,7 @@ function glmxls(glmout,
 
         # N
         worksheet_write_string(t, r, c, "N", formats[:model_name])
-        worksheet_merge_range(t, r, c + 1, r, c + 4, string(nobs(glmout[i])), formats[:str_c_b])
+        worksheet_merge_range(t, r, c + 1, r, c + 4, @sprintf("%.0f",nobs(glmout[i])), formats[:str_c_b])
 
         # degress of freedom
         r += 1
