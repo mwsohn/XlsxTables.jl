@@ -385,8 +385,9 @@ function glmxls(glmout,
                 worksheet_merge_range(t, r + 3, c + 1, r + 3, c + 4, @sprintf("%.4f (%d); p = %.4f",hl[1], hl[2], hl[3]), formats[:str_c_b])
 
                 # ROC (c-statistic)
+                rr = ROCAnalysis.roc(rocinput(glmout)...)
                 worksheet_write_string(t, r + 4, c, "Area under the ROC Curve", formats[:model_name])
-                worksheet_merge_range(t, r + 4, c + 1, r + 4, c + 4, @sprintf("%.4f",lroc(glmout[i])), formats[:str_c_b])
+                worksheet_merge_range(t, r + 4, c + 1, r + 4, c + 4, @sprintf("%.4f",ROCAnalysis.AUC(rr)), formats[:str_c_b])
 
                 r += 5
             end
