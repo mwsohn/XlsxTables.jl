@@ -43,6 +43,21 @@ format_defs = Dict(
         "border" => "thin"
     ),
 
+    :str_r_b => Dict(
+        "align" => "right",
+        "valign" => "vcenter",
+        "top" => "thin",
+        "left" => "thin",
+        "bottom" => "thin"
+    )
+
+    :str_c_b => Dict(
+        "align" => "center",
+        "valign" => "vcenter",
+        "top" => "thin",
+        "left" => "thin",
+        "bottom" => "thin"
+    )
     :model_name => Dict(
         "valign" => "vcenter",
         "align" => "left",
