@@ -6,7 +6,7 @@ module XlsxTables
 ##
 ################################################################################
 
-using DataFrames, CategoricalArrays, Distributions, GLM, StatsAPI, Survival, StatsBase, DataStructures,
+using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, DataStructures,
     HypothesisTests, NamedArrays, FreqTables, Stella, TableMetadataTools, ROCAnalysis,
     Dates, OrderedCollections, AnalysisOfVariance, LibXLSXWriter, Printf, Reexport
     
