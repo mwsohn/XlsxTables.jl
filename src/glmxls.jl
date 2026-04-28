@@ -347,20 +347,20 @@ function glmxls(glmout,
 
         # N
         worksheet_write_string(t, r, c, "N", formats[:model_name])
-        worksheet_merge_range(t, r, c + 1, r, c + 4, nobs(glmout[i]), formats[:n_fmt_center])
+        worksheet_merge_range(t, r, c + 1, r, c + 4, string(nobs(glmout[i])), formats[:str_c_b])
 
         # degress of freedom
         r += 1
         worksheet_write_string(t, r, c, "DF", formats[:model_name])
-        worksheet_merge_range(t, r, c + 1, r, c + 4, dof(glmout[i]), formats[:n_fmt_center])
+        worksheet_merge_range(t, r, c + 1, r, c + 4, string(dof(glmout[i])), formats[:str_c_b])
 
         # R² or pseudo R²
         r += 1
         if isa(glmout[i].model, LinearModel)
             worksheet_write_string(t, r, c, "R²", formats[:model_name])
-            worksheet_merge_range(t, r, c + 1, r, c + 4, r2(glmout[i]), formats[:p_fmt_center])
+            worksheet_merge_range(t, r, c + 1, r, c + 4, @sprintf("%.3f",r2(glmout[i])), formats[:str_c_b])
             worksheet_write_string(t, r + 1, c, "Adjusted R²", formats[:model_name])
-            worksheet_merge_range(t, r + 1, c + 1, r + 1, c + 4, adjr2(glmout[i]), formats[:p_fmt_center])
+            worksheet_merge_range(t, r + 1, c + 1, r + 1, c + 4, @sprintf("%.3f",adjr2(glmout[i])), formats[:str_c_b])
 
             # r += 2
             r = row2
@@ -371,34 +371,33 @@ function glmxls(glmout,
             # Logistic regression
             if isa(linkfun[i], LogitLink)
                 worksheet_write_string(t, r, c, "Pseudo R² (MacFadden)", formats[:model_name])
-                worksheet_merge_range(t, r, c + 1, r, c + 4, r2(glmout[i], :McFadden), formats[:p_fmt_center])
+                worksheet_merge_range(t, r, c + 1, r, c + 4, @sprintf("%.3f",r2(glmout[i], :McFadden)), formats[:str_c_b])
                 worksheet_write_string(t, r + 1, c, "Pseudo R² (Nagelkerke)", formats[:model_name])
-                worksheet_merge_range(t, r + 1, c + 1, r + 1, c + 4, r2(glmout[i], :Nagelkerke), formats[:p_fmt_center])
+                worksheet_merge_range(t, r + 1, c + 1, r + 1, c + 4, @sprintf("%.3f",r2(glmout[i], :Nagelkerke)), formats[:str_c_b])
 
                 # -2 log-likelihood
                 worksheet_write_string(t, r + 2, c, "-2 Log-Likelihood", formats[:model_name])
-                worksheet_merge_range(t, r + 2, c + 1, r + 2, c + 4, deviance(glmout[i]), formats[:p_fmt_center])
+                worksheet_merge_range(t, r + 2, c + 1, r + 2, c + 4, @sprintf("%.3f",deviance(glmout[i])), formats[:str_c_b])
 
                 # Hosmer-Lemeshow GOF test
                 worksheet_write_string(t, r + 3, c, "Hosmer-Lemeshow Chisq Test (df), p-value", formats[:model_name])
                 hl = hltest(glmout[i])
-                worksheet_merge_range(t, r + 3, c + 1, r + 3, c + 4, string(round(hl[1], digits=4), " (", hl[2], "); p = ", round(hl[3], digits=4)), formats[:p_fmt_center])
+                worksheet_merge_range(t, r + 3, c + 1, r + 3, c + 4, @sprintf("%.4f",@sprintf("%.4f",hl[1]), " (", hl[2], "); p = ", @sprintf("%.4f",hl[3])), formats[:str_c_b])
 
                 # ROC (c-statistic)
                 worksheet_write_string(t, r + 4, c, "Area under the ROC Curve", formats[:model_name])
-                _rocval = lroc(glmout[i])
-                worksheet_merge_range(t, r + 4, c + 1, r + 4, c + 4, round(_rocval, digits=4), formats[:p_fmt_center])
+                worksheet_merge_range(t, r + 4, c + 1, r + 4, c + 4, @sprintf("%.4f",lroc(glmout[i]), formats[:str_c_b])
 
                 r += 5
             end
 
             # AIC & BIC
             worksheet_write_string(t, r, c, "AIC", formats[:model_name])
-            worksheet_merge_range(t, r, c + 1, r, c + 4, aic(glmout[i]), formats[:p_fmt_center])
+            worksheet_merge_range(t, r, c + 1, r, c + 4, @sprintf("%.4f",aic(glmout[i])), formats[:str_c_b])
 
             r += 1
             worksheet_write_string(t, r, c, "BIC", formats[:model_name])
-            worksheet_merge_range(t, r, c + 1, r, c + 4, bic(glmout[i]), formats[:p_fmt_center])
+            worksheet_merge_range(t, r, c + 1, r, c + 4, @sprintf("%.4f",bic(glmout[i])), formats[:str_c_b])
 
             r = row2
             c += 4
@@ -407,11 +406,11 @@ function glmxls(glmout,
             # For coxModel
             # AIC & BIC
             worksheet_write_string(t, r, c, "AIC", formats[:model_name])
-            worksheet_merge_range(t, r, c + 1, r, c + 4, aic(glmout[i]), formats[:p_fmt_center])
+            worksheet_merge_range(t, r, c + 1, r, c + 4, @sprintf("%.4f",aic(glmout[i])), formats[:str_c_b])
 
             r += 1
             worksheet_write_string(t, r, c, "BIC", formats[:model_name])
-            worksheet_merge_range(t, r, c + 1, r, c + 4, bic(glmout[i]), formats[:p_fmt_center])
+            worksheet_merge_range(t, r, c + 1, r, c + 4, @sprintf("%.4f",bic(glmout[i])), formats[:str_c_b])
 
             r = row2
             c += 4
