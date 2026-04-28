@@ -556,18 +556,3 @@ function dfxls(df::DataFrame,
 
     workbook_close(wb)
 end
-
-function newfilename(filen::AbstractString)
-    while (isfile(filen))
-        # separate the name into three parts, basename (number).extension
-        (basename, ext) = splitext(filen)
-        m = match(r"(.*)(\(.*\))$", basename)
-        if m == nothing
-            filen = string(filen, " (1)")
-        else
-            m2 = parse(Int, replace(m[2], r"\((.*)\)", s"\1"))
-            filen = string(m[1], " (", m2 + 1, ")")
-        end
-    end
-    return filen
-end
