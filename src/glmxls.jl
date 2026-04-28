@@ -382,11 +382,11 @@ function glmxls(glmout,
                 # Hosmer-Lemeshow GOF test
                 worksheet_write_string(t, r + 3, c, "Hosmer-Lemeshow Chisq Test (df), p-value", formats[:model_name])
                 hl = hltest(glmout[i])
-                worksheet_merge_range(t, r + 3, c + 1, r + 3, c + 4, @sprintf("%.4f",@sprintf("%.4f",hl[1]), " (", hl[2], "); p = ", @sprintf("%.4f",hl[3])), formats[:str_c_b])
+                worksheet_merge_range(t, r + 3, c + 1, r + 3, c + 4, @sprintf("%.4f (%d); p = %.4f",hl[1], hl[2], hl[3]), formats[:str_c_b])
 
                 # ROC (c-statistic)
                 worksheet_write_string(t, r + 4, c, "Area under the ROC Curve", formats[:model_name])
-                worksheet_merge_range(t, r + 4, c + 1, r + 4, c + 4, @sprintf("%.4f",lroc(glmout[i]), formats[:str_c_b])
+                worksheet_merge_range(t, r + 4, c + 1, r + 4, c + 4, @sprintf("%.4f",lroc(glmout[i])), formats[:str_c_b])
 
                 r += 5
             end
