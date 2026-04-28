@@ -32,13 +32,13 @@ It is responsibility of the user to open a workbook before the function call and
 to actually create the physical file by close the workbook.
 
 ```
-julia> using LibXLSXWriter
+julia> using XlsxTables
 
-julia> wb = LibXLSXWriter.workbook_new("test_workbook.xlsx")
+julia> wb = workbook_new("test_workbook.xlsx")
 
 julia> glmxls(olsmodels,wb,"OLS1")
 
-Julia> LibXLSXWriter.workbook_close(wb)
+Julia> workbook_close(wb)
 ```
 
 # Example 2
