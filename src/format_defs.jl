@@ -49,7 +49,7 @@ format_defs = Dict(
         "top" => "thin",
         "left" => "thin",
         "bottom" => "thin"
-    )
+    ),
 
     :str_c_b => Dict(
         "align" => "center",
@@ -57,7 +57,8 @@ format_defs = Dict(
         "top" => "thin",
         "left" => "thin",
         "bottom" => "thin"
-    )
+    ),
+
     :model_name => Dict(
         "valign" => "vcenter",
         "align" => "left",
