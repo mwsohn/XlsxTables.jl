@@ -21,3 +21,10 @@ function hltest(glmout, q=10)
 
     return (hlstat, dof, pval)
 end
+
+function rocinput(logitmodel)
+    res = response(logitmodel)
+    pred = predict(logitmodel)
+    mask = res .== 1.0
+    return (pred[mask], pred[.!mask])
+end
