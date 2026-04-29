@@ -7,7 +7,7 @@ module XlsxTables
 ################################################################################
 
 using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, DataStructures,
-    HypothesisTests, NamedArrays, FreqTables, Stella, TableMetadataTools, ROCAnalysis,
+    HypothesisTests, NamedArrays, FreqTables, Stella, TableMetadataTools, LogisticROC,
     Dates, OrderedCollections, AnalysisOfVariance, LibXLSXWriter, Printf, Reexport
     
 @reexport using LibXLSXWriter: workbook_new, workbook_close, workbook_add_worksheet, workbook_add_format, format_set_bold, worksheet_set_column, worksheet_write_string, worksheet_write_number, worksheet_insert_image, worksheet_merge_range
