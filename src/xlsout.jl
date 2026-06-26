@@ -187,7 +187,7 @@ function bivariatexls(df::AbstractDataFrame,
                         LibXLSXWriter.worksheet_write_number(t,r, c + j * 2 + 2, rowtot[nr] > 0 ? x.array[nr, j] / rowtot[nr] : "", formats[:pct_fmt_parens])
                     end
                 end
-                pval = pvalue(ChisqTest(x.array))
+                pval = StatsAPI.pvalue(ChisqTest(x.array))
                 if isnan(pval) || isinf(pval)
                     pval = ""
                 elseif pval < 0.001
@@ -220,7 +220,7 @@ function bivariatexls(df::AbstractDataFrame,
                         end
                     end
                     # p-value - output only once
-                    pval = pvalue(ChisqTest(x.array))
+                    pval = StatsAPI.pvalue(ChisqTest(x.array))
 
                     if isnan(pval) || isinf(pval)
                         pval = ""
