@@ -63,10 +63,9 @@ function glmxls(glmout,
 
     num_models = length(glmout)
     otype = Vector(undef, num_models)
-    if isa(glmout[1].model, GeneralizedLinearModel)
-        linkfun = Vector{Link}(undef, num_models)
-        distrib = Vector{UnivariateDistribution}(undef, num_models)
-    end
+
+    linkfun = Vector{Link}(undef, num_models)
+    distrib = Vector{UnivariateDistribution}(undef, num_models)
 
     for i = 1:num_models
 
@@ -82,6 +81,8 @@ function glmxls(glmout,
             if eform == true
                 otype[i] = "HR"
             end
+        elseif isa(glmout[i].model, LinearModel)
+            # nothing for now            
         end
 
     end
