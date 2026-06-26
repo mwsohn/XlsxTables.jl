@@ -197,8 +197,8 @@ function bivariatexls(df::AbstractDataFrame,
                 r += 1
             else
                 for i = 1:nlev+1
-                    LibXLSXWriter.worksheet_write_string(r, c + (i - 1) * 2 + 1, "", formats[:empty_right])
-                    LibXLSXWriter.worksheet_write_string(r, c + (i - 1) * 2 + 2, "", formats[:empty_left])
+                    LibXLSXWriter.worksheet_write_string(t, r, c + (i - 1) * 2 + 1, "", formats[:empty_right])
+                    LibXLSXWriter.worksheet_write_string(t, r, c + (i - 1) * 2 + 2, "", formats[:empty_left])
                 end
                 LibXLSXWriter.worksheet_write_string(t, r, c + (nlev + 1) * 2 + 1, "", formats[:empty_border])
 
