@@ -192,6 +192,8 @@ function bivariatexls(df::AbstractDataFrame,
                     pval = ""
                 elseif pval < 0.001
                     pval = "< 0.001"
+                else
+                    pval = @sprintf("%.3f", pval)
                 end
                 LibXLSXWriter.worksheet_write_string(t,r, c + (nlev + 1) * 2 + 1, pval, formats[:p_fmt])
                 r += 1
@@ -226,6 +228,8 @@ function bivariatexls(df::AbstractDataFrame,
                         pval = ""
                     elseif pval < 0.001
                         pval = "< 0.001"
+                    else
+                        pval = @sprintf("%.3f", pval)
                     end
                     if length(rowval) == 1
                         LibXLSXWriter.worksheet_write_number(t,r, c + (nlev + 1) * 2, pval, formats[:p_fmt])
