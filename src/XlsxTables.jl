@@ -21,7 +21,7 @@ using DataFrames, CategoricalArrays, Distributions, GLM, Survival, StatsBase, Da
 export  univariatexls,   # output univariate statistics in an excel worksheet
         dfxls,
         anovaxls,
-        create_formats
+        create_formats,
         bivariatexls,  # output bivariate statistics in an excel worksheet
         glmxls,        # output GLM models to an excel worksheet
         # mglmxls,       # output multiple GLM regression models to an excel spreadsheet
